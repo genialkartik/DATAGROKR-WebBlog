@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import HomePage from './components/Homepage/homepage'
 import Profile from './components/Profile/profile'
+import Notify from './components/Notification/notify'
 
 const Theme = createMuiTheme({
   palette: {
@@ -15,6 +16,7 @@ const App = () => (
     <Router>
       <Route path="/" exact component={HomePage} />
       <Route path="/profile" exact component={Profile} />
+      <Route path="/notification" exact component={Notify} />
     </Router>
   </MuiThemeProvider>
 )

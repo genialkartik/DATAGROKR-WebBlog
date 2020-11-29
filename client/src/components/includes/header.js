@@ -134,7 +134,7 @@ function HeaderBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem onClick={() => setRedirect('/notification?type=comments')}>
         <IconButton aria-label="show 4 new Comments" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <ModeCommentIcon />
@@ -142,7 +142,7 @@ function HeaderBar() {
         </IconButton>
         <p>Comments</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => setRedirect('/notification?type=likes')}>
         <IconButton aria-label="show 11 new Likes" color="inherit">
           <Badge badgeContent={11} color="secondary">
             <FavoriteIcon />
@@ -150,7 +150,7 @@ function HeaderBar() {
         </IconButton>
         <p>Likes</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => setRedirect('/notification?type=impressions')}>
         <IconButton aria-label="show 4 new Insights" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <OfflineBoltIcon />
@@ -180,7 +180,7 @@ function HeaderBar() {
           <AppBar position="static">
             <Toolbar>
               <Typography className={classes.title} variant="h6" noWrap
-              onClick={()=>window.location.replace('/')}>
+                onClick={() => window.location.replace('/')}>
                 Welcome DATAGROKRian
           </Typography>
               <div className={classes.search}>
@@ -198,17 +198,20 @@ function HeaderBar() {
               </div>
               <div className={classes.grow} />
               <div className={classes.sectionDesktop}>
-                <IconButton aria-label="show 4 new Comments" color="inherit">
+                <IconButton aria-label="show 4 new Comments" color="inherit"
+                  onClick={() => setRedirect('/notification?type=comments')}>
                   <Badge badgeContent={4} color="secondary">
                     <ModeCommentIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="show 17 new Likes" color="inherit">
+                <IconButton aria-label="show 17 new Likes" color="inherit"
+                  onClick={() => setRedirect('/notification?type=likes')}>
                   <Badge badgeContent={17} color="secondary">
                     <FavoriteIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="show 4 new Impressive" color="inherit">
+                <IconButton aria-label="show 4 new Impressive" color="inherit"
+                  onClick={() => setRedirect('/notification?type=impressions')}>
                   <Badge badgeContent={4} color="secondary">
                     <OfflineBoltIcon />
                   </Badge>

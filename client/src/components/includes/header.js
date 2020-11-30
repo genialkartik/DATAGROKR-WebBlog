@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withRouter, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -78,13 +78,16 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  link: {
+    color: '#fff',
+    textDecoration: 'none'
+  }
 }));
 
 function HeaderBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [redirectUrl, setRedirect] = useState(null)
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -117,9 +120,18 @@ function HeaderBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => setRedirect('/profile')}>My Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Login</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
+      <Link className={classes.link} to={'/profile'}>
+        <MenuItem>My Profile</MenuItem>
+      </Link>
+      <Link className={classes.link} to={'/login'}>
+        <MenuItem>Login</MenuItem>
+      </Link>
+      <Link className={classes.link} to={'/logout'}>
+        <MenuItem>Logout</MenuItem>
+      </Link>
+      <Link className={classes.link} to={'/signup'}>
+        <MenuItem>Signup</MenuItem>
+      </Link>
     </Menu>
   );
 
@@ -134,30 +146,36 @@ function HeaderBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={() => setRedirect('/notification?type=comments')}>
-        <IconButton aria-label="show 4 new Comments" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <ModeCommentIcon />
-          </Badge>
-        </IconButton>
-        <p>Comments</p>
-      </MenuItem>
-      <MenuItem onClick={() => setRedirect('/notification?type=likes')}>
-        <IconButton aria-label="show 11 new Likes" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <FavoriteIcon />
-          </Badge>
-        </IconButton>
-        <p>Likes</p>
-      </MenuItem>
-      <MenuItem onClick={() => setRedirect('/notification?type=impressions')}>
-        <IconButton aria-label="show 4 new Insights" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <OfflineBoltIcon />
-          </Badge>
-        </IconButton>
-        <p></p>
-      </MenuItem>
+      <Link className={classes.link} to={'/notification?type=impressions'}>
+        <MenuItem>
+          <IconButton aria-label="show 4 new Comments" color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <ModeCommentIcon />
+            </Badge>
+          </IconButton>
+          <p>Comments</p>
+        </MenuItem>
+      </Link>
+      <Link className={classes.link} to={'/notification?type=impressions'}>
+        <MenuItem >
+          <IconButton aria-label="show 11 new Likes" color="inherit">
+            <Badge badgeContent={11} color="secondary">
+              <FavoriteIcon />
+            </Badge>
+          </IconButton>
+          <p>Likes</p>
+        </MenuItem>
+      </Link>
+      <Link className={classes.link} to={'/notification?type=impressions'}>
+        <MenuItem>
+          <IconButton aria-label="show 4 new Insights" color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <OfflineBoltIcon />
+            </Badge>
+          </IconButton>
+          <p></p>
+        </MenuItem>
+      </Link>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -174,78 +192,78 @@ function HeaderBar() {
 
   return (
     <>
-      {(redirectUrl) ?
-        <Redirect to={redirectUrl} /> :
-        <div className={classes.grow}>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography className={classes.title} variant="h6" noWrap
-                onClick={() => window.location.replace('/')}>
-                Welcome DATAGROKRian
+      <div className={classes.grow}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography className={classes.title} variant="h6" noWrap
+              onClick={() => window.location.replace('/')}>
+              Welcome DATAGROKRian
           </Typography>
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder="Search…"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ 'aria-label': 'search' }}
-                />
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
               </div>
-              <div className={classes.grow} />
-              <div className={classes.sectionDesktop}>
-                <IconButton aria-label="show 4 new Comments" color="inherit"
-                  onClick={() => setRedirect('/notification?type=comments')}>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+              />
+            </div>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <Link className={classes.link} to={'/notification?type=comments'}>
+                <IconButton aria-label="show 4 new Comments" color="inherit">
                   <Badge badgeContent={4} color="secondary">
                     <ModeCommentIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="show 17 new Likes" color="inherit"
-                  onClick={() => setRedirect('/notification?type=likes')}>
+              </Link>
+              <Link className={classes.link} to={'/notification?type=likes'}>
+                <IconButton aria-label="show 17 new Likes" color="inherit">
                   <Badge badgeContent={17} color="secondary">
                     <FavoriteIcon />
                   </Badge>
                 </IconButton>
-                <IconButton aria-label="show 4 new Impressive" color="inherit"
-                  onClick={() => setRedirect('/notification?type=impressions')}>
-                  <Badge badgeContent={4} color="secondary">
+              </Link>
+              <Link className={classes.link} to={'/notification?type=impressions'}>
+                <IconButton aria-label="show 4 new Impressive" color="inherit">
+                  <Badge badgeContent={17} color="secondary">
                     <OfflineBoltIcon />
                   </Badge>
                 </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </div>
-              <div className={classes.sectionMobile}>
-                <IconButton
-                  aria-label="show more"
-                  aria-controls={mobileMenuId}
-                  aria-haspopup="true"
-                  onClick={handleMobileMenuOpen}
-                  color="inherit"
-                >
-                  <MoreIcon />
-                </IconButton>
-              </div>
-            </Toolbar>
-          </AppBar>
-          {renderMobileMenu}
-          {renderMenu}
-        </div>
-      }
+              </Link>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
+        {renderMobileMenu}
+        {renderMenu}
+      </div>
     </>
   );
 }
 
-export default withRouter(HeaderBar)
+export default HeaderBar

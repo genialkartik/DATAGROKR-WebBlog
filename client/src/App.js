@@ -15,7 +15,7 @@ const App = () => (
   <MuiThemeProvider theme={Theme}>
     <Router>
       <Route path="/" exact component={HomePage} />
-      <Route path="/profile" exact component={Profile} />
+      <Route path="/profile" component={Profile} />
       <Route path="/notification" exact component={Notify} />
     </Router>
   </MuiThemeProvider>

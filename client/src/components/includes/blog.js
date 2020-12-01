@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom'
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -16,27 +17,32 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
+    width: 440,
+    minHeight: 436,
     marginTop: 50, marginLeft: 30,
-    float: "left"
+    float: "left",
+    borderRadius: '10px 10px 5px 5px'
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
+    paddingTop: '57.25%',
   },
   avatar: {
     backgroundColor: red[500],
   },
+  shortdesc: {
+    position: 'relative',
+    bottom: 10,
+    maxHeight: 27,
+    overflow: 'hidden',
+  },
+  react: {
+    position: 'relative',
+    bottom: 10
+  },
+  title: {
+    fontSize: 18
+  }
 }));
 
 export default function Blog(props) {
@@ -45,6 +51,12 @@ export default function Blog(props) {
   return (
     <>
       <Card className={classes.root}>
+        <CardMedia
+          href={'/blogdesc'}
+          className={classes.media}
+          image="/goodies.jpg"
+          title="Paella dish"
+        />
         <CardHeader
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
@@ -59,29 +71,25 @@ export default function Blog(props) {
           title="Shrimp and Chorizo Paella"
           subheader="September 14, 2016"
         />
-        <CardMedia
-          className={classes.media}
-          image="/logo192.png"
-          title="Paella dish"
-        />
-        <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            This impressive paella is a perfect party dish and a fun meal to cook together with your
-            guests. Add 1 cup of frozen peas along with the mussels, if you like.
-        </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
+        <Link to={'/blogdesc'} >
+          <CardContent className={classes.shortdesc}>
+            <Typography variant="bold" color="textPrimary" component="bold" className={classes.title}>
+              This impressive paella is a perfect party dish dtufyguhjfcgvhbj
+            </Typography>
+          </CardContent>
+        </Link>
+        <CardActions disableSpacing className={classes.react}>
           <IconButton aria-label="add to favorites">
             <FavoriteBorderOutlinedIcon />
             <Typography variant="body1" color="textPrimary" component="h6">
               &nbsp;12
-        </Typography>
+            </Typography>
           </IconButton>
           <IconButton aria-label="Like">
             <OfflineBoltOutlinedIcon />
             <Typography variant="body1" color="textPrimary" component="h6">
               &nbsp;12
-        </Typography>
+            </Typography>
           </IconButton>
           <IconButton aria-label="share">
             <ShareIcon />

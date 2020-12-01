@@ -7,6 +7,7 @@ import Notify from './components/Notification/notify'
 import Login from './components/Login/Login'
 import Signup from './components/Signup/Signup'
 import UploadBlog from './components/Blog/upload'
+import BlogDetail from './components/Blog/Details'
 
 const Theme = createMuiTheme({
   palette: {
@@ -22,6 +23,7 @@ const App = () => (
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/write" component={UploadBlog} />
+      <Route path="/blogdesc" component={BlogDetail} />
       <Route path="/notification" exact component={Notify} />
     </Router>
   </MuiThemeProvider>

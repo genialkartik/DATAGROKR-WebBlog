@@ -10,8 +10,9 @@ import PublicIcon from '@material-ui/icons/Public';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
-import FontDownloadIcon from '@material-ui/icons/FontDownload';
 import StrikethroughSIcon from '@material-ui/icons/StrikethroughS';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import LinkIcon from '@material-ui/icons/Link';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
@@ -77,6 +78,77 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadBlog() {
   const classes = useStyles();
 
+  // var btn = document.querySelector(".gethtml");
+  // var content = document.querySelector(".getcontent");
+  // var editorContent = document.querySelector(".editor");
+  // var filecount = 0;
+  // btn.addEventListener("click", function () {
+  //   var desc = document.querySelector(".editor").innerHTML
+  //   let formData = new FormData()
+  //   if (desc) {
+  //     formData.append('blogtitle', document.querySelector("#blogtitle").value)
+  //     formData.append('blogtags', document.querySelector("#blogtags").value)
+  //     formData.append('blogdesc', desc)
+  //     $.ajax({
+  //       url: '/blog/<%=user.uname%>/upload-blog/<%=blogid%>',
+  //       method: 'POST',
+  //       contentType: false,
+  //       processData: false,
+  //       data: formData,
+  //       success: function (res) {
+  //         location.href = res.redirectto;
+  //       },
+  //       error: function () {
+  //         location.reload()
+  //       }
+  //     })
+  //   }
+  // });
+
+  function link() {
+    var url = prompt("Enter the URL");
+    document.execCommand("createLink", false, url);
+  }
+
+  function changeColor() {
+    var color = prompt("Default:#f1f233");
+    document.execCommand("foreColor", false, color);
+  }
+
+  function changeBackColor() {
+    var bcolor = prompt('Default:#000')
+    document.execCommand('backColor', false, bcolor);
+  }
+
+  // function getImage() {
+  //   var file = document.querySelector("input[type=file]").files[0];
+  //   let formData = new FormData()
+  //   if (file) {
+  //     formData.append('blogfile', file)
+  //     $.ajax({
+  //       url: '/blog/upload-blogfile/<%=blogid%>',
+  //       method: 'PUT',
+  //       contentType: false,
+  //       processData: false,
+  //       data: formData,
+  //       success: function (res) {
+  //         console.log(res)
+  //         const img = document.createElement("img");
+  //         img.setAttribute("id", "metadata" + filecount);
+  //         img.setAttribute("class", "blogdescimg");
+  //         img.src = res.img_location;
+  //         editorContent.appendChild(img)
+  //         filecount++;
+  //       },
+  //       error: function () {
+  //         alert('Upload faild. Please try again')
+  //       }
+  //     })
+  //   } else {
+  //     alert('select any file to upload')
+  //   }
+  // }
+
   return (
     <React.Fragment>
       <HeaderBar />
@@ -115,23 +187,23 @@ export default function UploadBlog() {
               <br /><br />
               <div id="editor-container">
                 <div className="toolbar">
-                  <FormatUnderlinedIcon className={classes.toolbutton} onClick={"document.execCommand('underline', false, '')"} />
-                  <FormatBoldIcon className={classes.toolbutton} onClick={"document.execCommand('bold', false, '')"} />
-                  <FormatItalicIcon className={classes.toolbutton} onClick={"document.execCommand('italic', false, '' )"} />
-                  <FontDownloadIcon className={classes.toolbutton} onClick={"document.execCommand('increaseFontSize', false, '' )"} />
-                  <FontDownloadIcon className={classes.toolbutton} onClick={"document.execCommand('decreaseFontSize', false, '' )"} />
-                  <StrikethroughSIcon className={classes.toolbutton} onClick={"document.execCommand('strikeThrough',false,'' )"} />
-                  <LinkIcon className={classes.toolbutton} onClick={"link( )"} />
-                  <UndoIcon className={classes.toolbutton} onClick={"document.execCommand('undo',false,'' )"} />
-                  <RedoIcon className={classes.toolbutton} onClick={"document.execCommand('redo',false,'' )"} />
-                  <FormatIndentIncreaseIcon className={classes.toolbutton} onClick={"document.execCommand('indent',false,'' )"} />
-                  <FormatIndentDecreaseIcon className={classes.toolbutton} onClick={"document.execCommand('outdent',false,'' )"} />
-                  <FormatColorTextIcon className={classes.toolbutton} onClick={"changeColor( )"} />
-                  <ColorLensIcon className={classes.toolbutton} onClick={"changeBackColor( )"} />
-                  <FormatAlignLeftIcon className={classes.toolbutton} onClick={"document.execCommand('justifyLeft',false,'' )"} />
-                  <FormatAlignCenterIcon className={classes.toolbutton} onClick={"document.execCommand('justifyCenter',false,'' )"} />
-                  <FormatAlignRightIcon className={classes.toolbutton} onClick={"document.execCommand('justifyRight',false,'' )"} />
-                  <input accept="image/*" className={classes.input} id="blog-images" type="file" onChange="getImage()" />
+                  <FormatUnderlinedIcon className={classes.toolbutton} onClick={() => document.execCommand('underline', false, '')} />
+                  <FormatBoldIcon className={classes.toolbutton} onClick={() => document.execCommand('bold', false, '')} />
+                  <FormatItalicIcon className={classes.toolbutton} onClick={() => document.execCommand('italic', false, '')} />
+                  <ArrowUpwardIcon className={classes.toolbutton} onClick={() => document.execCommand('increaseFontSize', false, '')} />
+                  <ArrowDownwardIcon className={classes.toolbutton} onClick={() => document.execCommand('decreaseFontSize', false, '')} />
+                  <StrikethroughSIcon className={classes.toolbutton} onClick={() => document.execCommand('strikeThrough', false, '')} />
+                  <LinkIcon className={classes.toolbutton} onClick={link} />
+                  <UndoIcon className={classes.toolbutton} onClick={() => document.execCommand('undo', false, '')} />
+                  <RedoIcon className={classes.toolbutton} onClick={() => document.execCommand('redo', false, '')} />
+                  <FormatIndentIncreaseIcon className={classes.toolbutton} onClick={() => document.execCommand('indent', false, '')} />
+                  <FormatIndentDecreaseIcon className={classes.toolbutton} onClick={() => document.execCommand('outdent', false, '')} />
+                  <FormatColorTextIcon className={classes.toolbutton} onClick={changeColor} />
+                  <ColorLensIcon className={classes.toolbutton} onClick={changeBackColor} />
+                  <FormatAlignLeftIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyLeft', false, '')} />
+                  <FormatAlignCenterIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyCenter', false, '')} />
+                  <FormatAlignRightIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyRight', false, '')} />
+                  <input accept="image/*" className={classes.input} id="blog-images" type="file" onChange={"getImage"} />
                   <label htmlFor="blog-images">
                     <ImageIcon className={classes.toolbutton} />
                   </label>

@@ -13,14 +13,15 @@ import Blog from '../includes/blog'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
+    width: 440,
+    minHeight: 453,
     marginTop: 50, marginLeft: 30,
     float: "left", textAlign: 'center'
   },
   fab: {
     position: 'relative',
     left: -30,
-    maxWidth: 345,
+    maxWidth: 395,
     padding: 0,
     margin: window.screen.availWidth < 500 ? 120 : 160
   },

@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import AddIcon from '@material-ui/icons/Add';
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 345,
     padding: 0,
     margin: window.screen.availWidth < 500 ? 120 : 160
+  },
+  link: {
+    color: '#fff',
+    textDecoration: 'none'
   }
 }));
 
@@ -33,14 +38,14 @@ function Profile() {
       <HeaderBar />
       <Card className={classes.root}>
         <CardContent>
-          <Tooltip title="Add" aria-label="add">
-            <Fab color="secondary" className={classes.fab}>
-              <AddIcon />
-            </Fab>
-          </Tooltip>
-          <Typography variant="body" color="textSecondary" component="h3">
-            Write Blog
-            </Typography>
+          <Link className={classes.link} to={'./write'}>
+            <Tooltip title="Add" aria-label="add">
+              <Fab color="secondary" className={classes.fab}>
+                <AddIcon />
+              </Fab>
+            </Tooltip>
+            <Typography variant="body" color="textSecondary" component="h3">Write Blog</Typography>
+          </Link>
         </CardContent>
       </Card>
       <Blog role='admin' />

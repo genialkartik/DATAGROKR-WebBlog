@@ -7,7 +7,6 @@ import HeaderBar from '../includes/header'
 function Notify(props) {
   const [redirectUrl, setRedirect] = useState(null)
   let type = new URLSearchParams(props.location.search).get('type')
-  console.log(type)
 
   return (
     <>{(redirectUrl) ?

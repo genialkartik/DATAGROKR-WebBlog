@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Blog(props) {
   const classes = useStyles();
-  console.log(props.role)
 
   return (
     <>

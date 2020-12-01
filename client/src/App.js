@@ -4,6 +4,8 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import HomePage from './components/Homepage/homepage'
 import Profile from './components/Profile/profile'
 import Notify from './components/Notification/notify'
+import Login from './components/Login/Login'
+import Signup from './components/Signup/Signup'
 
 const Theme = createMuiTheme({
   palette: {
@@ -16,6 +18,8 @@ const App = () => (
     <Router>
       <Route path="/" exact component={HomePage} />
       <Route path="/profile" component={Profile} />
+      <Route path="/login" component={Signup} />
+      <Route path="/signup" component={Signup} />
       <Route path="/notification" exact component={Notify} />
     </Router>
   </MuiThemeProvider>

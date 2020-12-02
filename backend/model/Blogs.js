@@ -22,8 +22,8 @@ const blogSchema = mongoose.Schema({
   Cover: {
     type: String
   },
-  Likes: Number,
-  Impressions: Number,
+  Likes: Array,
+  Impressions: Array,
   visitorsCount: Number,
   date_created: {
     type: Date,

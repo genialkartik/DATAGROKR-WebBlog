@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from "axios";
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
 import Card from '@material-ui/core/Card';
@@ -33,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
 
 function Profile() {
   const classes = useStyles()
+  const [blogs, setblogs] = useState([])
+  useEffect(() => {
+    try {
+      axios.get('/blogs/list')
+        .then(res => {
+          res.data.msg ? alert(res.data.msg) : setblogs(res.data.blog_list)
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
 
   return (
     <>
@@ -49,15 +61,9 @@ function Profile() {
           </Link>
         </CardContent>
       </Card>
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
-      <Blog role='admin' />
+      <div>
+        {blogs.map(blog => <Blog role="visitor" data={blog} />)}
+      </div>
     </>
   )
 }

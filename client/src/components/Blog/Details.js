@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -9,12 +11,44 @@ import BookIcon from '@material-ui/icons/Book';
 import HeaderBar from '../includes/header'
 import './details.css';
 
-function BlogDetail() {
+const useStyles = makeStyles((theme) => ({
+  tags: {
+    position: 'relative',
+    marginRight: 10,
+    fontSize: 16,
+    padding: 5,
+    borderRadius: 5,
+    color: '#ffffff'
+  }
+}));
+
+function BlogDetail(props) {
+  const classes = useStyles();
+  let blogId = new URLSearchParams(props.location.search).get('blogId')
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
+  const [visitors, setVisitors] = useState(false)
   const [likeCount, setLCount] = useState(0)
   const [impCount, setICount] = useState(0)
-
+  const [visiCount, setVCount] = useState(0)
+  const [BlogData, setBlogData] = useState({})
+  const [tags, setTags] = useState([])
+  useEffect(() => {
+    try {
+      axios.post('/read', { blogId })
+        .then(res => {
+          if (!res.data) alert('NO data found')
+          else {
+            setBlogData(res.data)
+            setLCount(res.data.Likes)
+            setICount(res.data.Impressions)
+            setTags(res.data.Tags.split(','))
+          }
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [blogId])
   return (
     <>
       < HeaderBar />
@@ -44,10 +78,15 @@ function BlogDetail() {
                   <span>{impCount}</span>
                 </div>
               </button>
-              <button className="actionBox" title="People Read">
-                <BookIcon style={{ color: 'green' }} />
+              <button className="actionBox" title="Visitor's Count" onClick={() => {
+                setVisitors(!visitors)
+                setVCount(visitors ? visiCount - 1 : visiCount + 1)
+              }}>
+                {!visitors ? <BookIcon /> :
+                  <BookIcon style={{ color: 'green' }} />
+                }
                 <div className="actionCouter">
-                  <span>130</span>
+                  <span>{visiCount}</span>
                 </div>
               </button>
               <button className="actionBox" title="Read Now">
@@ -69,33 +108,22 @@ function BlogDetail() {
                 </div>
                 <div className="article__header__meta">
                   <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 medium">
-                    Why Older People Struggle In Programming Jobs
+                    {BlogData.Title}
                   </h1>
-                  <div className="mb-4 spec__tags">
-                    <a className="blog-tag mr-1" href="/t/webdev" style={{ backgroundColor: '#562765', color: '#ffffff' }}>
-                      <span className="tag__prefix">#</span>
-                      webdev
-                    </a>
-                  </div>
+                  {tags.map(tag => (
+                    <a href="/t/webdev" key={Math.random()} style={{ backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'), }}
+                      className={classes.tags}>#{tag}</a>
+                  ))}<br /><br />
                   <div className="article__subheader">
-                    <a href="/bytebodger" className="flex items-center mr-4 mb-4 s:mb-0 fw-medium blog-link">
-                      <span className="blog-avatar blog-avatar--l mr-2">
-                        <img className="avatar__image" src="https://res.cloudinary.com/practicaldev/image/fetch/s--KVmz3z0G--/c_fill,f_auto,fl_progressive,h_50,q_auto,w_50/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/337841/18d07d43-995c-4ec9-b6b5-be71c843e803.jpeg" alt="bytebodger profile" /></span>
-                      <span class="blog-username">Adam Nathaniel Davis</span>
-                    </a>
-                    <span className="fs-s mb-4 s:mb-0">
-                      <time datetime="2020-11-27T04:56:11Z" className="date-no-year" title="Friday, 27 November 2020, 10:26:11">27 Nov</time>
-                      ・<em>Updated on <time datetime="2020-11-28T17:04:25Z" className="date-no-year" title="Saturday, 28 November 2020, 22:34:25">28 Nov</time></em>
-                      <span className="mr-4">・14 min read</span>
-                    </span>
-                    <span id="action-space" className="mb-4 s:mb-0"></span>
+                    <time dateTime="2020-11-27T04:56:11Z" className="date-no-year" title={BlogData.date_created}>{new Date(BlogData.date_created).toString().substring(0, 15)}</time>
+                    <span className="mr-4">・14 min read</span>
                   </div>
                 </div>
               </header>
 
               <div className="article__main">
-                <nav className="series-switcher blog-card blog-card--secondary">
-                  <p>Blog Description</p>
+                <nav className="blog-card blog-card--secondary">
+                  <div dangerouslySetInnerHTML={{ __html: BlogData.Description }} />
                 </nav>
               </div>
 
@@ -109,7 +137,7 @@ function BlogDetail() {
                   </div>
                 </header>
                 <div id="comments-container" data-commentable-id="519528" data-commentable-type="Article">
-                  <form className="comment-form" id="new_comment" action="/comments" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
+                  <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
                     <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
                       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png" width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
                     </span>
@@ -131,18 +159,18 @@ function BlogDetail() {
                 <span className="blog-avatar blog-avatar--xl  mr-2 shrink-0">
                   <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--MMbZqYXw--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/337841/18d07d43-995c-4ec9-b6b5-be71c843e803.jpeg" className="blog-avatar__image" alt="Adam Nathaniel Davis profile" />
                 </span>
-                <span className="blog-link blog-subtitle-2 mt-5">Adam Nathaniel Davis</span>
+                <span className="blog-link blog-subtitle-2 mt-5">{BlogData.Author}</span>
               </a>
             </div>
             <div className="color-base-70">
-              React acolyte, full-stack developer
+              Backend Web Developer
               </div>
             <div className="user-metadata-details">
               <ul className="user-metadata-details-inner">
                 <li>
                   <div className="key">Work</div>
                   <div className="value">
-                    Senior Software Engineer at LLC
+                    Web Developer at DataGrokr
                     </div>
                 </li>
                 <li>
@@ -150,7 +178,7 @@ function BlogDetail() {
                     Location
                     </div>
                   <div className="value">
-                    Jacksonville, FL
+                    New Delhi, India
                     </div>
                 </li>
                 <li>
@@ -158,7 +186,7 @@ function BlogDetail() {
                     Joined
                     </div>
                   <div className="value">
-                    <time datetime="2020-02-18T16:12:37Z" className="date">Feb 18, 2020</time>
+                    <time dateTime="2020-02-18T16:12:37Z" className="date">Jan 01, 2021</time>
                   </div>
                 </li>
               </ul>

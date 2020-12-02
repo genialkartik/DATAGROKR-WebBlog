@@ -20,8 +20,7 @@ const blogSchema = mongoose.Schema({
     required: true
   },
   Cover: {
-    type: String,
-    required: true
+    type: String
   },
   Likes: Number,
   Impressions: Number,

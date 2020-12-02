@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
   shortdesc: {
     position: 'relative',
-    bottom: 10,
-    maxHeight: 27,
+    bottom: 20,
+    maxHeight: 37,
     overflow: 'hidden',
   },
   react: {
@@ -43,8 +43,17 @@ const useStyles = makeStyles((theme) => ({
     bottom: 10
   },
   title: {
-    fontSize: 18
+    position: 'relative',
+    fontSize: 16,
   },
+  tags: {
+    position: 'relative',
+    marginRight: 10,
+    fontSize: 14,
+    padding: 2,
+    borderRadius: 5,
+    color: '#ffffff'
+  }
 }));
 
 export default function Blog(props) {
@@ -53,9 +62,11 @@ export default function Blog(props) {
   const [impressed, setImpression] = useState(false)
   const [likeCount, setLCount] = useState(0)
   const [impCount, setICount] = useState(0)
+  const [tags, setTags] = useState([])
   useEffect(() => {
     setLCount(props.data.Likes)
     setICount(props.data.Impressions)
+    setTags(props.data.Tags.split(','))
   }, [props])
   return (
     <div key={props.data.BlogId}>
@@ -80,10 +91,15 @@ export default function Blog(props) {
           title={props.data.Author}
           subheader={new Date(props.data.date_created).toString().substring(0, 15)}
         />
-        <Link to={'/blogdesc'} >
+
+        <Link to={'/read?blogId=' + props.data.BlogId} >
           <CardContent className={classes.shortdesc}>
+            {tags.map(tag => (
+              <a href="/t/webdev" key={Math.random()} style={{ backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'), }}
+                className={classes.tags}>#{tag}</a>
+            ))}<br />
             <Typography variant="bold" color="textPrimary" component="bold" className={classes.title}>
-              {props.data.Title}
+              {props.data.Title}xamples of Chips, using an image Avatar, SVG Icon Avatar, "Letter" and (string) Avatar.
             </Typography>
           </CardContent>
         </Link>
@@ -115,6 +131,6 @@ export default function Blog(props) {
           </IconButton>
         </CardActions>
       </Card>
-    </div>
+    </div >
   )
 }

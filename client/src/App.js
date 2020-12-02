@@ -23,7 +23,7 @@ const App = () => (
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/write" component={UploadBlog} />
-      <Route path="/blogdesc" component={BlogDetail} />
+      <Route path="/read" component={BlogDetail} />
       <Route path="/notification" exact component={Notify} />
     </Router>
   </MuiThemeProvider>

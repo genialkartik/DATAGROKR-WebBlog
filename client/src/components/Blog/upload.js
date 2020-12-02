@@ -92,7 +92,13 @@ export default function UploadBlog() {
       formData.append('cover', cover)
       formData.append('desc', descText.current.innerHTML)
       axios.post('/blog/upload', formData
-      ).then(res => console.log(res.data))
+      ).then(res => {
+        if (res.data.uploaded) {
+          window.location.replace('/read?blogId=' + res.data.blogData.BlogId)
+        } else {
+          alert('Something went Wrong in Uploading Blog')
+        }
+      })
     } catch (error) {
       console.log(error)
     }

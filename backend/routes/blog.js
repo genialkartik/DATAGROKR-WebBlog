@@ -11,13 +11,13 @@ router.post('/blog/upload', async (req, res) => {
       Title: req.body.title,
       Tags: req.body.tags,
       Description: req.body.desc,
-      Cover: req.files.cover.name, // cover link
+      Cover: req.files ? req.files.cover.name : '', // cover link
       Likes: 1, Impressions: 0,
       visitorsCount: 0,
     })
     await newBlog.save()
       .then(data => {
-        res.status(200).json({ uploaded: data ? true : false })
+        res.status(200).json({ uploaded: data ? true : false, blogData:data })
       })
   } catch (error) {
     console.log(error)
@@ -34,6 +34,18 @@ router.get('/blogs/list', async (req, res) => {
   } catch (error) {
     console.log(error)
     res.status(200).json({ msg: 'Error finding blog list' })
+  }
+})
+
+// read blog
+router.post('/read', async (req, res) => {
+  try {
+    Blog.findOne({ BlogId: req.body.blogId }, (err, data) => {
+      res.status(200).json(err ? null : data)
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(200).json(null)
   }
 })
 

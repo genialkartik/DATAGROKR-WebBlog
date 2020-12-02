@@ -1,19 +1,25 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react'
+import axios from "axios";
 import HeaderBar from '../includes/header'
 import Blog from '../includes/blog'
 
-const useStyles = makeStyles((theme) => ({
-  
-}));
-
 export default function HomePage() {
-  const classes = useStyles();
+  const [blogs, setblogs] = useState([])
+  useEffect(() => {
+    try {
+      axios.get('/blogs/list')
+        .then(res => {
+          res.data.msg ? alert(res.data.msg) : setblogs(res.data.blog_list)
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
   return (
     <div>
       <HeaderBar />
       <div>
-        <Blog role="visitor" />
+        {blogs.map(blog => <Blog role="visitor" data={blog} />)}
       </div>
     </div>
   )

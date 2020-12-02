@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -77,6 +78,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UploadBlog() {
   const classes = useStyles();
+  const [title, setTitle] = useState('')
+  const [tags, settags] = useState('')
+  const [cover, setcover] = useState('')
+
+  const descText = useRef();
+
+  const upload = async () => {
+    try {
+      let formData = new FormData();
+      formData.append('title', title)
+      formData.append('tags', tags)
+      formData.append('cover', cover)
+      formData.append('desc', descText.current.innerHTML)
+      axios.post('/blog/upload', formData
+      ).then(res => console.log(res.data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // var btn = document.querySelector(".gethtml");
   // var content = document.querySelector(".getcontent");
@@ -148,10 +168,11 @@ export default function UploadBlog() {
   //     alert('select any file to upload')
   //   }
   // }
-
+  // var tt = '<div><u>asdf</u></div><div><b>as</b></div><div><big><big>df</big></big></div><div><strike>sad</strike></div><div>f</div><div><a href="asdfsdfadsfasfasd">sd</a><br></div>'
   return (
     <React.Fragment>
       <HeaderBar />
+      {/* <div dangerouslySetInnerHTML={{ __html: tt }} /> */}
       <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
@@ -166,6 +187,7 @@ export default function UploadBlog() {
                 fullWidth
                 margin="normal"
                 variant="outlined"
+                onChange={e => setTitle(e.target.value)}
               />
               <TextField
                 id="tags" label="Tags"
@@ -173,12 +195,14 @@ export default function UploadBlog() {
                 fullWidth size="small"
                 margin="normal"
                 variant="outlined"
+                onChange={e => settags(e.target.value)}
               /><br /><br />
               <input
                 accept="image/*"
                 className={classes.input}
                 id="feature-image"
                 type="file"
+                onChange={e => setcover(e.target.files[0])}
               />
               <label htmlFor="feature-image">
                 <Button variant="contained" color="primary" startIcon={<CloudUploadIcon />}
@@ -209,7 +233,7 @@ export default function UploadBlog() {
                   </label>
                 </div>
                 <div className="center">
-                  <div className={classes.editor} contentEditable>
+                  <div className={classes.editor} ref={descText} contentEditable>
                   </div>
                   <br /><br />
                   <Button
@@ -217,6 +241,7 @@ export default function UploadBlog() {
                     color="primary"
                     size="large"
                     className={classes.button}
+                    onClick={upload}
                     startIcon={<PublicIcon />}
                   >Publish Blog</Button>
                 </div>

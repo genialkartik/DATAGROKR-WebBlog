@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import BookIcon from '@material-ui/icons/Book';
 
@@ -8,6 +10,11 @@ import HeaderBar from '../includes/header'
 import './details.css';
 
 function BlogDetail() {
+  const [liked, setLiked] = useState(false)
+  const [impressed, setImpression] = useState(false)
+  const [likeCount, setLCount] = useState(0)
+  const [impCount, setICount] = useState(0)
+
   return (
     <>
       < HeaderBar />
@@ -15,16 +22,26 @@ function BlogDetail() {
         <div className="blog-actions">
           <div className="actions-details">
             <div className="actions__inner">
-              <button className="actionBox" title="Like">
-                <FavoriteBorderOutlinedIcon style={{ color: 'red' }} />
+              <button className="actionBox" title="Like" onClick={() => {
+                setLiked(!liked)
+                setLCount(liked ? likeCount - 1 : likeCount + 1)
+              }} >
+                {!liked ? <FavoriteBorderOutlinedIcon /> :
+                  <FavoriteIcon style={{ color: 'red' }} />
+                }
                 <div className="actionCouter">
-                  <span>130</span>
+                  <span>{likeCount}</span>
                 </div>
               </button>
-              <button className="actionBox" title="Impression">
-                <OfflineBoltOutlinedIcon style={{ color: 'orange' }} />
+              <button className="actionBox" title="Impression" onClick={() => {
+                setImpression(!impressed)
+                setICount(impressed ? impCount - 1 : impCount + 1)
+              }}>
+                {!impressed ? <OfflineBoltOutlinedIcon /> :
+                  <OfflineBoltIcon style={{ color: 'orange' }} />
+                }
                 <div className="actionCouter">
-                  <span>130</span>
+                  <span>{impCount}</span>
                 </div>
               </button>
               <button className="actionBox" title="People Read">
@@ -48,7 +65,7 @@ function BlogDetail() {
             <article className="blog-card blog-article">
               <header className="article__header" id="main-title">
                 <div className="article__cover">
-                  <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--xt1U76cJ--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/p78w9jlwc6f2nrwpj1os.jpg" width="1000" height="420" style={{ backgroundColor: '#dddddd' }} className="article__cover__image" alt="Coverfor Why Older People Struggle In Programming Jobs" />
+                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FIwGpkLx4Ii0%2Fmaxresdefault.jpg&f=1&nofb=1" width="1000" height="420" style={{ backgroundColor: '#dddddd' }} className="article__cover__image" alt="Coverfor Why Older People Struggle In Programming Jobs" />
                 </div>
                 <div className="article__header__meta">
                   <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 medium">

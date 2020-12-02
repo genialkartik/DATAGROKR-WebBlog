@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
 import Card from '@material-ui/core/Card';
@@ -13,7 +13,9 @@ import { red } from '@material-ui/core/colors';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,20 +44,27 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 18
-  }
+  },
 }));
 
 export default function Blog(props) {
   const classes = useStyles();
-
+  const [liked, setLiked] = useState(false)
+  const [impressed, setImpression] = useState(false)
+  const [likeCount, setLCount] = useState(0)
+  const [impCount, setICount] = useState(0)
+  useEffect(() => {
+    setLCount(props.data.Likes)
+    setICount(props.data.Impressions)
+  }, [props])
   return (
-    <>
+    <div key={props.data.BlogId}>
       <Card className={classes.root}>
         <CardMedia
           href={'/blogdesc'}
           className={classes.media}
           image="/goodies.jpg"
-          title="Paella dish"
+          title={props.data.Cover}
         />
         <CardHeader
           avatar={
@@ -65,30 +74,40 @@ export default function Blog(props) {
           }
           action={
             <IconButton aria-label="settings">
-              {props.role === 'admin' ? <MoreVertIcon /> : <></>}
+              {props.role === 'admin' ? <DeleteIcon /> : <></>}
             </IconButton>
           }
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          title={props.data.Author}
+          subheader={new Date(props.data.date_created).toString().substring(0, 15)}
         />
         <Link to={'/blogdesc'} >
           <CardContent className={classes.shortdesc}>
             <Typography variant="bold" color="textPrimary" component="bold" className={classes.title}>
-              This impressive paella is a perfect party dish dtufyguhjfcgvhbj
+              {props.data.Title}
             </Typography>
           </CardContent>
         </Link>
         <CardActions disableSpacing className={classes.react}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteBorderOutlinedIcon />
+          <IconButton aria-label="add to favorites" onClick={() => {
+            setLiked(!liked)
+            setLCount(liked ? likeCount - 1 : likeCount + 1)
+          }} >
+            {!liked ? <FavoriteBorderOutlinedIcon /> :
+              <FavoriteIcon style={{ color: 'red' }} />
+            }
             <Typography variant="body1" color="textPrimary" component="h6">
-              &nbsp;12
+              &nbsp;{likeCount}
             </Typography>
           </IconButton>
-          <IconButton aria-label="Like">
-            <OfflineBoltOutlinedIcon />
+          <IconButton aria-label="Like" onClick={() => {
+            setImpression(!impressed)
+            setICount(impressed ? impCount - 1 : impCount + 1)
+          }}>
+            {!impressed ? <OfflineBoltOutlinedIcon /> :
+              <OfflineBoltIcon style={{ color: 'orange' }} />
+            }
             <Typography variant="body1" color="textPrimary" component="h6">
-              &nbsp;12
+              &nbsp;{impCount}
             </Typography>
           </IconButton>
           <IconButton aria-label="share">
@@ -96,6 +115,6 @@ export default function Blog(props) {
           </IconButton>
         </CardActions>
       </Card>
-    </>
+    </div>
   )
 }

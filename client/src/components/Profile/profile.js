@@ -15,7 +15,7 @@ import Blog from '../includes/blog'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 440,
-    minHeight: 453,
+    minHeight: 463,
     marginTop: 50, marginLeft: 30,
     float: "left", textAlign: 'center'
   },
@@ -62,7 +62,7 @@ function Profile() {
         </CardContent>
       </Card>
       <div>
-        {blogs.map(blog => <Blog role="visitor" data={blog} />)}
+        {blogs.map(blog => <Blog role="admin" data={blog} />)}
       </div>
     </>
   )

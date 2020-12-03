@@ -27,7 +27,7 @@ function BlogDetail(props) {
   let blogId = new URLSearchParams(props.location.search).get('blogId')
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
-  const [visitors, setVisitors] = useState(false)
+  // const [visitors, setVisitors] = useState(false)
   const [likeCount, setLCount] = useState(0)
   const [impCount, setICount] = useState(0)
   const [visiCount, setVCount] = useState(0)
@@ -39,16 +39,50 @@ function BlogDetail(props) {
         .then(res => {
           if (!res.data) alert('NO data found')
           else {
-            setBlogData(res.data)
-            setLCount(res.data.Likes)
-            setICount(res.data.Impressions)
-            setTags(res.data.Tags.split(','))
+            setBlogData(res.data.blogData)
+            setLiked(res.data.like_bool)
+            setImpression(res.data.impress_bool)
+            setLCount(res.data.blogData.Likes.length)
+            setICount(res.data.blogData.Impressions.length)
+            setVCount(res.data.blogData.visitorsCount)
+            setTags(res.data.blogData.Tags.split(','))
           }
         })
     } catch (error) {
       console.log(error)
     }
   }, [blogId])
+
+  const addLike = (id) => {
+    setLiked(!liked);
+    setLCount(liked ? likeCount - 1 : likeCount + 1)
+    try {
+      axios.post('/like/reaction', { id, add: !liked })
+        .then(res => {
+          if (!res.data.liked) {
+            setLiked(liked)
+            setLCount(likeCount)
+          }
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const addImpression = (id) => {
+    setImpression(!impressed);
+    setICount(impressed ? impCount - 1 : impCount + 1)
+    try {
+      axios.post('/impression/reaction', { id, add: !impressed })
+        .then(res => {
+          if (!res.data.impressed) {
+            setImpression(impressed);
+            setICount(impCount)
+          }
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       < HeaderBar />
@@ -56,10 +90,7 @@ function BlogDetail(props) {
         <div className="blog-actions">
           <div className="actions-details">
             <div className="actions__inner">
-              <button className="actionBox" title="Like" onClick={() => {
-                setLiked(!liked)
-                setLCount(liked ? likeCount - 1 : likeCount + 1)
-              }} >
+              <button className="actionBox" title="Like" onClick={() => addLike(blogId)} >
                 {!liked ? <FavoriteBorderOutlinedIcon /> :
                   <FavoriteIcon style={{ color: 'red' }} />
                 }
@@ -67,10 +98,7 @@ function BlogDetail(props) {
                   <span>{likeCount}</span>
                 </div>
               </button>
-              <button className="actionBox" title="Impression" onClick={() => {
-                setImpression(!impressed)
-                setICount(impressed ? impCount - 1 : impCount + 1)
-              }}>
+              <button className="actionBox" title="Impression" onClick={() => addImpression(blogId)}>
                 {!impressed ? <OfflineBoltOutlinedIcon /> :
                   <OfflineBoltIcon style={{ color: 'orange' }} />
                 }
@@ -78,13 +106,8 @@ function BlogDetail(props) {
                   <span>{impCount}</span>
                 </div>
               </button>
-              <button className="actionBox" title="Visitor's Count" onClick={() => {
-                setVisitors(!visitors)
-                setVCount(visitors ? visiCount - 1 : visiCount + 1)
-              }}>
-                {!visitors ? <BookIcon /> :
-                  <BookIcon style={{ color: 'green' }} />
-                }
+              <button className="actionBox" title="Visitor's Count">
+                <BookIcon style={{ color: 'green' }} />
                 <div className="actionCouter">
                   <span>{visiCount}</span>
                 </div>
@@ -104,12 +127,14 @@ function BlogDetail(props) {
             <article className="blog-card blog-article">
               <header className="article__header" id="main-title">
                 <div className="article__cover">
-                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FIwGpkLx4Ii0%2Fmaxresdefault.jpg&f=1&nofb=1" width="1000" height="420" style={{ backgroundColor: '#dddddd' }} className="article__cover__image" alt="Coverfor Why Older People Struggle In Programming Jobs" />
+                  <img src={'https://el-testing.s3.amazonaws.com/' + BlogData.Cover} 
+                  style={{ backgroundColor: '#dddddd' }} 
+                  className="article__cover__image" alt={BlogData.Cover} />
                 </div>
                 <div className="article__header__meta">
-                  <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 medium">
+                  <h1 className="blog_header">
                     {BlogData.Title}
-                  </h1>
+                  </h1><br />
                   {tags.map(tag => (
                     <a href="/t/webdev" key={Math.random()} style={{ backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'), }}
                       className={classes.tags}>#{tag}</a>

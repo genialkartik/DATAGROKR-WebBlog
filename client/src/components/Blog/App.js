@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -26,8 +25,6 @@ import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
 import ImageIcon from '@material-ui/icons/Image';
 
-import HeaderBar from '../includes/header'
-
 const useStyles = makeStyles((theme) => ({
   layout: {
     width: 'auto',
@@ -49,17 +46,8 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   },
-  toolbar: {
-    position: 'sticky',
-    top: 0,
-    backgroundColor: '#424242',
-    boxShadow: '0px 1px 2px 0px #111',
-    display: 'flex',
-    justifyContent: 'space-around',
-    zIndex: 1,
-  },
   button: {
-    marginLeft: theme.spacing(50),
+    marginLeft: theme.spacing(35),
   },
   toolbutton: {
     margin: theme.spacing(1),
@@ -85,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function UploadBlog() {
+export default function App() {
   const classes = useStyles();
   const [title, setTitle] = useState('')
   const [tags, settags] = useState('')
@@ -94,23 +82,7 @@ export default function UploadBlog() {
   const descText = useRef();
 
   const upload = async () => {
-    try {
-      let formData = new FormData();
-      formData.append('title', title)
-      formData.append('tags', tags)
-      formData.append('cover', cover)
-      formData.append('desc', descText.current.innerHTML)
-      axios.post('/blog/upload', formData
-      ).then(res => {
-        if (res.data.uploaded) {
-          window.location.replace('/read?blogId=' + res.data.blogData.BlogId)
-        } else {
-          alert('Something went Wrong in Uploading Blog')
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    
   }
 
   // var btn = document.querySelector(".gethtml");
@@ -186,7 +158,6 @@ export default function UploadBlog() {
   // var tt = '<div><u>asdf</u></div><div><b>as</b></div><div><big><big>df</big></big></div><div><strike>sad</strike></div><div>f</div><div><a href="asdfsdfadsfasfasd">sd</a><br></div>'
   return (
     <React.Fragment>
-      <HeaderBar />
       {/* <div dangerouslySetInnerHTML={{ __html: tt }} /> */}
       <CssBaseline />
       <main className={classes.layout}>
@@ -225,7 +196,7 @@ export default function UploadBlog() {
               </label>
               <br /><br />
               <div id="editor-container">
-                <div className={classes.toolbar}>
+                <div className="toolbar">
                   <FormatUnderlinedIcon className={classes.toolbutton} onClick={() => document.execCommand('underline', false, '')} />
                   <FormatBoldIcon className={classes.toolbutton} onClick={() => document.execCommand('bold', false, '')} />
                   <FormatItalicIcon className={classes.toolbutton} onClick={() => document.execCommand('italic', false, '')} />

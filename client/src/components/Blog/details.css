@@ -198,7 +198,7 @@ article {
 
 .article__subheader {
   font-size: 1rem;
-  color: #a1a1a1;
+  color: #ffffff;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -531,21 +531,37 @@ button, input, optgroup, select, textarea {
   flex: 1 auto;
 }
 
+.comment-show {
+  background-color: none;
+  border: none;
+}
+
 .comment-form__field {
   display: flex;
   flex: 1 auto;
   flex-direction: column;
   margin-bottom: 0.75rem;
-  background-color: #f9fafa;
-  border: 1px solid #b5bdc4;
-  color: #08090a;
+  background-color: #1E2D3D;
+  border: 1px solid #415b70;
+  padding: 5px;
+  color: #ffffff;
   border-radius: 5px;
+  overflow: hidden;
   transition: all cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
+}
+.reply-btn {
+  position: relative;
+  margin-left: 60px;
+  bottom: 10px;
+}
+
+.reply-container{
+  margin-left: 40px;
 }
 
 .blog-color-selector, .blog-select, .blog-checkbox, .blog-radio, .blog-textfield {
   background-color: #f9fafa;
-  border: 1px solid #b5bdc4;
+  border: 1px solid #344452;
   color: #08090a;
   appearance: none;
   -webkit-appearance: none;
@@ -573,7 +589,11 @@ button, input, optgroup, select, textarea {
   transition: none;
 }
 
+
+
 .comment-form .comment-textarea {
+  background-color: #1e2d3d;
+  color: #fff;
   resize: vertical;
   padding: 0.5em;
   max-height: 40vh;

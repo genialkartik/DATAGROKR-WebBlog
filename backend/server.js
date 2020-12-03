@@ -6,7 +6,7 @@ const fileUpload = require('express-fileupload')
 
 app.use(cors());
 
-var PORT = process.env.PORT || 2021
+var PORT = process.env.PORT || 2020
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -35,6 +35,7 @@ mongoose.connect('mongodb+srv://genialkartik:genialkartik@datagrokr.fnll7.mongod
   .catch(err => console.log(err))
 
 app.use(require('./routes/blog'))
+app.use(require('./routes/comment'))
 
 app.listen(PORT, () => {
   console.log(`Listening on PORT:  ${PORT}`)

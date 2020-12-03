@@ -7,20 +7,12 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import BookIcon from '@material-ui/icons/Book';
+import Button from '@material-ui/core/Button';
+import ReplyIcon from '@material-ui/icons/Reply';
 
 import HeaderBar from '../includes/header'
 import './details.css';
-
-const useStyles = makeStyles((theme) => ({
-  tags: {
-    position: 'relative',
-    marginRight: 10,
-    fontSize: 16,
-    padding: 5,
-    borderRadius: 5,
-    color: '#ffffff'
-  }
-}));
+import CommentCard from './commentCard'
 
 function BlogDetail(props) {
   const classes = useStyles();
@@ -33,6 +25,41 @@ function BlogDetail(props) {
   const [visiCount, setVCount] = useState(0)
   const [BlogData, setBlogData] = useState({})
   const [tags, setTags] = useState([])
+  const [commentInput, setCommentInput] = useState([])
+  const [reply_bool, setReplyBool] = useState(true)
+  const [replyText, setRText] = useState('')
+  const [replyInput, setreplyInput] = useState([])
+  const [commentData, setCommentData] = useState([])
+  // const commentData = [
+  //   {
+  //     id: 1,
+  //     text: "Example comment here.",
+  //     author: "user2",
+  //     Comments: [
+  //       {
+  //         id: 2,
+  //         text: "Another example comment text.",
+  //         author: "user3",
+  //         Comments: [
+  //           {
+  //             id: 3,
+  //             text: "Another example comment text.",
+  //             author: "user4",
+  //             Comments: []
+  //           }
+  //         ]
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     id: 4,
+  //     text: "Example comment here 2.",
+  //     author: "user5",
+  //     Comments: []
+  //   },
+  // ]
+
+
   useEffect(() => {
     try {
       axios.post('/read', { blogId })
@@ -48,10 +75,98 @@ function BlogDetail(props) {
             setTags(res.data.blogData.Tags.split(','))
           }
         })
+      axios.post('/get/comment', { blogId })
+        .then(res => {
+          console.log(res.data)
+          setCommentData(res.data)
+        })
     } catch (error) {
       console.log(error)
     }
   }, [blogId])
+
+  function Comment({ comment }) {
+    const nestedComments = (comment.Comments || []).map(comment => {
+      return <Comment key={comment.commentId} comment={comment} type="child" />
+    })
+
+    return (
+      <div style={{ "marginLeft": "25px", "marginTop": "10px" }}>
+        <div className="comment-form" id="new_comment">
+          <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
+            <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
+              width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
+          </span>
+          <div className="comment-form__field">
+            <p className="comment-show" style={{ border: '1px', padding: '10px' }}>
+              <div className="article__subheader">
+                <a href="/bytebodger" style={{ color: '#fff' }} className="flex items-center mr-4 mb-4 s:mb-0 fw-medium blog-link">
+                  {comment.author}</a>
+                <span className="fs-s mb-4 s:mb-0">
+                  ・<time dateTime="2020-11-27T04:56:11Z" style={{ color: '#999' }} title="Friday, 27 November 2020, 10:26:11">27 Nov</time>
+                </span>
+              </div>{comment.text}
+            </p>
+          </div>
+        </div>
+        {replyInput}
+        <div className="reply-btn">
+          {reply_bool &&
+            <Button startIcon={<ReplyIcon />} onClick={() => addReplyCard(comment._id)} size="small">Reply</Button>
+          }
+        </div>
+        {nestedComments}
+      </div>
+    )
+  }
+
+
+  const uploadReply = async (id) => {
+    try {
+      console.log(id)
+      axios.post('/add/reply', {
+        blogId: blogId,
+        commentText: 'Reply Reply 7',
+        id: id
+      }).then(res => {
+        console.log(res.data)
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const addReplyCard = (id) => {
+    setReplyBool(false)
+    setreplyInput(replyInput.concat(
+      <div className="reply-container" key={Math.random()} data-commentable-type="Article">
+        <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
+          <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
+            <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
+              width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
+          </span>
+          <div className="comment-form__field">
+            <textarea placeholder="Add Reply" id="text-area"
+              className="blog-textfield comment-textarea blog-textfield--ghost"
+              aria-label="Add a Reply"
+              name="comment[body_markdown]"
+              onChange={e => setRText(e.target.value)}
+            >
+            </textarea>
+          </div>
+        </form>
+        <Button variant="outlined" size="small" className={classes.pushComment}
+          onClick={() => uploadReply(id)}>Reply it!</Button><br /><br />
+      </div>
+    ))
+  }
+  const addCommentCard = () => {
+    setCommentInput(commentInput.concat(
+      <div>
+        <CommentCard blogId={blogId} key={commentInput.length} />
+      </div>
+    ))
+  }
 
   const addLike = (id) => {
     setLiked(!liked);
@@ -83,6 +198,9 @@ function BlogDetail(props) {
       console.log(error)
     }
   }
+
+
+
   return (
     <>
       < HeaderBar />
@@ -127,9 +245,9 @@ function BlogDetail(props) {
             <article className="blog-card blog-article">
               <header className="article__header" id="main-title">
                 <div className="article__cover">
-                  <img src={'https://el-testing.s3.amazonaws.com/' + BlogData.Cover} 
-                  style={{ backgroundColor: '#dddddd' }} 
-                  className="article__cover__image" alt={BlogData.Cover} />
+                  <img src={'https://el-testing.s3.amazonaws.com/' + BlogData.Cover}
+                    style={{ backgroundColor: '#dddddd' }}
+                    className="article__cover__image" alt={BlogData.Cover} />
                 </div>
                 <div className="article__header__meta">
                   <h1 className="blog_header">
@@ -157,21 +275,24 @@ function BlogDetail(props) {
                   <h3 className="blog-subtitle-1">Discussion</h3>
                   <div id="comment-subscription">
                     <div role="presentation" className="blog-btn-group">
-                      <span className="blog-btn blog-btn--outlined">Subscribe</span>
+                      <span onClick={addCommentCard} className="blog-btn blog-btn--outlined">Add Comment</span>
                     </div>
                   </div>
                 </header>
                 <div id="comments-container" data-commentable-id="519528" data-commentable-type="Article">
-                  <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
-                    <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
-                      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png" width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
-                    </span>
-                    <div className="comment-form__field">
-                      <textarea placeholder="Add to the discussion" id="text-area" className="blog-textfield comment-textarea blog-textfield--ghost" aria-label="Add a comment" name="comment[body_markdown]">
-                      </textarea>
-                    </div>
-                  </form>
+
+
+                  <div>
+                    {
+                      commentData.map((comment) => {
+                        return (
+                          <Comment key={comment.commentId} comment={comment} />
+                        )
+                      })
+                    }
+                  </div>
                 </div>
+                {commentInput.map(input => { return input })}
               </section>
             </article>
           </div>
@@ -224,3 +345,18 @@ function BlogDetail(props) {
 }
 
 export default BlogDetail;
+
+const useStyles = makeStyles((theme) => ({
+  tags: {
+    position: 'relative',
+    marginRight: 10,
+    fontSize: 16,
+    padding: 5,
+    borderRadius: 5,
+    color: '#ffffff'
+  },
+  pushComment: {
+    position: 'relative',
+    marginLeft: 45
+  }
+}));

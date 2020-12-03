@@ -183,11 +183,9 @@ export default function UploadBlog() {
   //     alert('select any file to upload')
   //   }
   // }
-  // var tt = '<div><u>asdf</u></div><div><b>as</b></div><div><big><big>df</big></big></div><div><strike>sad</strike></div><div>f</div><div><a href="asdfsdfadsfasfasd">sd</a><br></div>'
   return (
     <React.Fragment>
       <HeaderBar />
-      {/* <div dangerouslySetInnerHTML={{ __html: tt }} /> */}
       <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>

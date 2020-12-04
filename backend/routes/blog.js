@@ -88,11 +88,13 @@ router.post('/blogs/list', async (req, res) => {
 router.post('/read', async (req, res) => {
   try {
     Blog.findOne({ BlogId: req.body.blogId }, (err, blogData) => {
-      Blog.updateOne({ BlogId: req.body.blogId }, { visitorsCount: blogData.visitorsCount + 1 }, () => { })
       var liked = null, impressed = null;
-      if (req.session.userdata) {
-        liked = blogData.Likes.find(name => name == req.session.userdata.fullname)
-        impressed = blogData.Impressions.find(name => name == req.session.userdata.fullname)
+      if (blogData) {
+        Blog.updateOne({ BlogId: req.body.blogId }, { visitorsCount: blogData.visitorsCount + 1 }, () => { })
+        if (req.session.userdata) {
+          liked = blogData.Likes.find(name => name == req.session.userdata.fullname)
+          impressed = blogData.Impressions.find(name => name == req.session.userdata.fullname)
+        }
       }
       res.status(200).json(err ? null : {
         blogData,

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -15,10 +16,11 @@ import HeaderBar from '../includes/header'
 import './details.css';
 import CommentCard from './commentCard'
 
-let socket;
+// let socket;
 function BlogDetail(props) {
   const classes = useStyles();
   let blogId = new URLSearchParams(props.location.search).get('blogId')
+  const [loggedIn, setLoggein] = useState(false)
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
   const [likeCount, setLCount] = useState(0)
@@ -35,15 +37,14 @@ function BlogDetail(props) {
 
   useEffect(() => {
     try {
-      socket = io('http://localhost:2020/')
+      // socket = io('http://localhost:2020/')
       // get blog details
       axios({
         method: 'POST',
         url: '/read',
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-          mode: 'no-cors',
+          'Content-Type': 'application/json'
         },
         data: { blogId }
       })
@@ -57,23 +58,22 @@ function BlogDetail(props) {
             setICount(res.data.blogData.Impressions.length)
             setVCount(res.data.blogData.visitorsCount)
             setTags(res.data.blogData.Tags.split(','))
+            setLoggein(res.data.logged_in)
+            // get comments' detail
+            axios.post('/get/comment', { blogId })
+              .then(res => {
+                setCommentData(res.data)
+              })
           }
         })
       // count this user as active reader
 
-      socket.on('connect', () => {
-        socket.emit('readBlog', { blogId }, (currentViewers) => {
-          console.log(currentViewers)
-          setActiveReaders(currentViewers)
-        });
-      });
-
-      // get comments' detail
-      axios.post('/get/comment', { blogId })
-        .then(res => {
-          console.log(res.data)
-          setCommentData(res.data)
-        })
+      // socket.on('connect', () => {
+      //   socket.emit('readBlog', { blogId }, (currentViewers) => {
+      //     console.log(currentViewers)
+      //     setActiveReaders(currentViewers)
+      //   });
+      // });
     } catch (error) {
       console.log(error)
     }
@@ -105,7 +105,7 @@ function BlogDetail(props) {
         </div>
         {selectedComment === comment._id && replyInput}
         <div className="reply-btn">
-          {reply_bool &&
+          {reply_bool && loggedIn &&
             <Button startIcon={<ReplyIcon />} onClick={() => addReplyCard(comment._id)} size="small">Reply</Button>
           }
         </div>
@@ -204,7 +204,7 @@ function BlogDetail(props) {
         <div className="blog-actions">
           <div className="actions-details">
             <div className="actions__inner">
-              <button className="actionBox" title="Like" onClick={() => addLike(blogId)} >
+              <button className="actionBox" title="Like" onClick={() => loggedIn ? addLike(blogId) : alert('Login to React')} >
                 {!liked ? <FavoriteBorderOutlinedIcon /> :
                   <FavoriteIcon style={{ color: 'red' }} />
                 }
@@ -212,7 +212,7 @@ function BlogDetail(props) {
                   <span>{likeCount}</span>
                 </div>
               </button>
-              <button className="actionBox" title="Impression" onClick={() => addImpression(blogId)}>
+              <button className="actionBox" title="Impression" onClick={() => loggedIn ? addImpression(blogId) : alert('Login to React')}>
                 {!impressed ? <OfflineBoltOutlinedIcon /> :
                   <OfflineBoltIcon style={{ color: 'orange' }} />
                 }
@@ -270,9 +270,16 @@ function BlogDetail(props) {
                 <header className="relative flex justify-between items-center mb-6">
                   <h3 className="blog-subtitle-1">Discussion</h3>
                   <div id="comment-subscription">
-                    <div role="presentation" className="blog-btn-group">
-                      <span onClick={addCommentCard} className="blog-btn blog-btn--outlined">Add Comment</span>
-                    </div>
+                    {loggedIn ?
+                      <div role="presentation" className="blog-btn-group">
+                        <span onClick={addCommentCard} className="blog-btn blog-btn--outlined">Add Comment</span>
+                      </div> :
+                      <Link to={'/login'}>
+                        <div role="presentation" className="blog-btn-group">
+                          <span className="blog-btn blog-btn--outlined">Login to Comment</span>
+                        </div>
+                      </Link>
+                    }
                   </div>
                 </header>
 

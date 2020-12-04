@@ -18,16 +18,25 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import EditIcon from '@material-ui/icons/Edit';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 export default function Blog(props) {
   const classes = useStyles();
+  const [loggedIn, setLoggedIn] = useState(false)
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
   const [likeCount, setLCount] = useState(0)
   const [impCount, setICount] = useState(0)
   const [visiCount, setVCount] = useState(0)
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(anchorEl);
   const [tags, setTags] = useState([])
+
   useEffect(() => {
+    setLoggedIn(props.loggedIn)
     setLCount(props.data.Likes.length)
     setICount(props.data.Impressions.length)
     setVCount(props.data.visitorsCount)
@@ -36,15 +45,18 @@ export default function Blog(props) {
 
   const deleteBlog = (id) => {
     try {
-      axios.post('/blog/delete', { blogId: id })
-        .then(res => {
-          alert(res.data.is_deleted ? 'Blog delete successfully' : 'Something went Wrong')
-          window.location.reload();
-        })
+      if (props.role === 'admin') {
+        axios.post('/blog/delete', { blogId: id })
+          .then(res => {
+            alert(res.data.is_deleted ? 'Blog delete successfully' : 'Something went Wrong')
+            window.location.reload();
+          })
+      }
     } catch (error) {
       console.log(error)
     }
   }
+
   const addLike = (id) => {
     setLiked(!liked);
     setLCount(liked ? likeCount - 1 : likeCount + 1)
@@ -75,6 +87,40 @@ export default function Blog(props) {
       console.log(error)
     }
   }
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const menuId = 'more-option';
+  const moreOption = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'right', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <Link className={classes.link} to={`/write?blogId=${props.data.BlogId}&mode=edit`}>
+        <MenuItem >
+          <IconButton aria-label="Edit Blog" color="inherit">
+            <EditIcon />
+          </IconButton>
+          <p>Edit</p>
+        </MenuItem>
+      </Link>
+      <MenuItem onClick={() => deleteBlog(props.data.BlogId)} >
+        <IconButton aria-label="Edit Blog" color="inherit">
+          <DeleteIcon />
+        </IconButton>
+        <p>Delete</p>
+      </MenuItem>
+    </Menu>
+  );
 
   return (
     <div key={props.data.BlogId}>
@@ -92,9 +138,18 @@ export default function Blog(props) {
             </Avatar>
           }
           action={
-            <IconButton aria-label="settings">
-              {props.role === 'admin' ? <DeleteIcon onClick={() => deleteBlog(props.data.BlogId)} /> : <></>}
-            </IconButton>
+            props.role === 'admin' ? <>
+              <IconButton
+                aria-label="settings"
+                edge="end"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit">
+                <MoreVertIcon />
+              </IconButton>
+              {moreOption}
+            </> : <></>
           }
           title={props.data.Author}
           subheader={new Date(props.data.date_created).toString().substring(0, 15)}
@@ -115,7 +170,7 @@ export default function Blog(props) {
           </CardContent>
         </Link>
         <CardActions disableSpacing className={classes.react}>
-          <IconButton aria-label="add to favorites" onClick={() => addLike(props.data.BlogId)} >
+          <IconButton aria-label="add to favorites" onClick={() => loggedIn ? addLike(props.data.BlogId) : alert('Login to React')} >
             {!liked ? <FavoriteBorderOutlinedIcon /> :
               <FavoriteIcon style={{ color: 'red' }} />
             }
@@ -123,7 +178,7 @@ export default function Blog(props) {
               &nbsp;{likeCount}
             </Typography>
           </IconButton>
-          <IconButton aria-label="Like" onClick={() => addImpression(props.data.BlogId)}>
+          <IconButton aria-label="Like" onClick={() => loggedIn ? addImpression(props.data.BlogId) : alert("Login to React")}>
             {!impressed ? <OfflineBoltOutlinedIcon /> :
               <OfflineBoltIcon style={{ color: 'orange' }} />
             }
@@ -137,7 +192,7 @@ export default function Blog(props) {
               &nbsp;{visiCount}
             </Typography>
           </IconButton>
-          <IconButton aria-label="share" style={{left: 160, position: 'relative'}}>
+          <IconButton aria-label="share" style={{ left: 160, position: 'relative' }}>
             <ShareIcon />
           </IconButton>
         </CardActions>
@@ -164,5 +219,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative', marginRight: 10, fontSize: 14, padding: 2,
     borderRadius: 5, color: '#ffffff',
   },
-  tagsCont: { position: 'relative', overflow: 'hidden', height: 20 }
+  tagsCont: { position: 'relative', overflow: 'hidden', height: 20 },
+  link: { color: '#fff', textDecoration: 'none' }
 }));

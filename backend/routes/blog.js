@@ -40,8 +40,39 @@ router.post('/blog/upload', async (req, res) => {
 router.get('/blogs/list', async (req, res) => {
   try {
     Blog.find({}, (err, data) => {
-      res.status(200).json({ blog_list: err ? [] : data })
+      res.status(200).json(
+        err ? {
+          blog_list: [],
+          logged_in: req.session.userdata ? true : false
+        } : {
+            blog_list: data,
+            logged_in: req.session.userdata ? true : false
+          })
     })
+  } catch (error) {
+    console.log(error)
+    res.status(200).json({ msg: 'Error finding blog list' })
+  }
+})
+
+router.post('/blogs/list', async (req, res) => {
+  try {
+    if (req.session.userdata) {
+      Blog.find({ Author: req.session.userdata.fullname }, (err, data) => {
+        res.status(200).json(
+          err ? {
+            blog_list: [],
+            logged_in: true
+          } : {
+              blog_list: data,
+              logged_in: true
+            })
+      })
+    } else {
+      res.status(200).json({
+        blog_list: [], logged_in: false
+      })
+    }
   } catch (error) {
     console.log(error)
     res.status(200).json({ msg: 'Error finding blog list' })
@@ -57,6 +88,7 @@ router.post('/read', async (req, res) => {
       var impressed = blogData.Impressions.find(name => name == 'Madan')
       res.status(200).json(err ? null : {
         blogData,
+        logged_in: req.session.userdata ? true : false,
         like_bool: liked ? true : false,
         impress_bool: impressed ? true : false
       })

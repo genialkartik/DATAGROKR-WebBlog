@@ -10,36 +10,25 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import HeaderBar from '../includes/header'
-import Blog from '../includes/blog'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: 440,
-    minHeight: 463,
-    marginTop: 50, marginLeft: 30,
-    float: "left", textAlign: 'center'
-  },
-  fab: {
-    position: 'relative',
-    left: -30,
-    maxWidth: 395,
-    padding: 0,
-    margin: window.screen.availWidth < 500 ? 120 : 160
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'none'
-  }
-}));
+import Blog from '../Blog/blogCard'
 
 function Profile() {
   const classes = useStyles()
   const [blogs, setblogs] = useState([])
+  const [loggedIn, setLoggedIn] = useState(false)
+
   useEffect(() => {
     try {
-      axios.get('/blogs/list')
+      axios.post('/blogs/list')
         .then(res => {
-          res.data.msg ? alert(res.data.msg) : setblogs(res.data.blog_list)
+          if (res.data.logged_in === false)
+            window.location.replace('/login')
+          else if (res.data.msg)
+            alert(res.data.msg)
+          else {
+            setLoggedIn(res.data.logged_in)
+            setblogs(res.data.blog_list)
+          }
         })
     } catch (error) {
       console.log(error)
@@ -62,10 +51,30 @@ function Profile() {
         </CardContent>
       </Card>
       <div>
-        {blogs.map(blog => <Blog role="admin" data={blog} />)}
+        {blogs.map(blog => <Blog role="admin" loggedIn={loggedIn} data={blog} />)}
       </div>
     </>
   )
 }
 
-export default Profile
+export default Profile;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: 440,
+    minHeight: 463,
+    marginTop: 50, marginLeft: 30,
+    float: "left", textAlign: 'center'
+  },
+  fab: {
+    position: 'relative',
+    left: -30,
+    maxWidth: 395,
+    padding: 0,
+    margin: window.screen.availWidth < 500 ? 120 : 160
+  },
+  link: {
+    color: '#fff',
+    textDecoration: 'none'
+  }
+}));

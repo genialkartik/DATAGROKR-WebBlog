@@ -9,8 +9,7 @@ const userSchema = mongoose.Schema({
   },
   Password: {
     type: String,
-    required: true,
-    minLength: 8
+    required: true
   },
   Name: {
     type: String,
@@ -48,5 +47,4 @@ userSchema.statics.findByCredentials = async (Username, Password) => {
 }
 
 const User = mongoose.model('users', userSchema)
-
 module.exports = User

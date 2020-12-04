@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-// import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import { Link, withRouter } from 'react-router-dom'
 
 import Avatar from '@material-ui/core/Avatar';
@@ -42,21 +42,32 @@ const useStyles = makeStyles((theme) => ({
 
 function Signup(props) {
   const classes = useStyles();
-  let [name, setName] = useState()
+  let [fullname, setName] = useState()
   let [username, setUsername] = useState()
-  let [pwd, setPwd] = useState()
+  let [password, setPassword] = useState()
   let [snackOpen, setSnackOpen] = useState(false)
   let [msg, setMsg] = useState('')
 
+  useEffect(() => {
+    axios.get('/user/login')
+      .then(res => {
+        if (res.data.logged_in) {
+          window.location.replace('/')
+        }
+      })
+  }, [])
+
   const signUp = () => {
-    // axios.post('/user/signup', {
-    //   uname: name, username: username, upwd: pwd
-    // }).then(res => {
-    //   setMsg(res.data.msg)
-    //   setSnackOpen(true);
-    //   if (res.data.status === 200)
-    //     setTimeout(() => { props.history.push('/') }, 2000)
-    // })
+    axios.post('/user/signup', { fullname, username, password })
+      .then(res => {
+        console.log(res.data)
+        if (res.data.sign_up) {
+          setMsg('Signed Up Successfully')
+          setTimeout(() => { props.history.push('/') }, 1000)
+        } else
+          setMsg('Something went Wrong')
+        setSnackOpen(true);
+      })
   }
 
   const handleClose = (event, reason) => {
@@ -68,7 +79,7 @@ function Signup(props) {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Link className={classes.link}  to={`/`} style={{ position: 'absolute', fontSize: '1em', left: '30px', top: '20px' }}>
+      <Link className={classes.link} to={`/`} style={{ position: 'absolute', fontSize: '1em', left: '30px', top: '20px' }}>
         <ArrowBackIcon /></Link>
       <CssBaseline />
       <div className={classes.paper}>
@@ -114,7 +125,7 @@ function Signup(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => setPwd(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
         </Grid>
@@ -130,7 +141,7 @@ function Signup(props) {
           </Button>
         <Grid container justify="flex-end">
           <Grid item>
-            <Link className={classes.link}  to={'/user/login'} variant="body2">
+            <Link className={classes.link} to={'/login'} variant="body2">
               Already have an account? Sign in
               </Link>
           </Grid>

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, withRouter, Redirect } from 'react-router-dom'
-// import axios from 'axios'
+import axios from 'axios'
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -18,62 +16,33 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'none'
-  }
-}));
-
 function Login(props) {
   const classes = useStyles();
   let [username, setUsername] = useState()
-  let [pwd, setPwd] = useState()
+  let [password, setPwd] = useState()
   let [snackOpen, setSnackOpen] = useState(false)
   let [msg, setMsg] = useState('')
   const [login, setLogin] = React.useState(false)
 
   useEffect(() => {
-    // axios.get('/user/login')
-    //   .then(res => {
-    //     if (res.data.status === 1) {
-    //       alert(res.data.msg)
-    //       setLogin(true)
-    //     }
-    //   })
+    axios.get('/user/login')
+      .then(res => {
+        if (res.data.logged_in) {
+          setLogin(true)
+        }
+      })
   }, [])
 
   const signIn = () => {
-    // axios.post('/user/login', {
-    //   uname: username, upwd: pwd
-    // }).then(res => {
-    //   setMsg(res.data.msg)
-    //   setSnackOpen(true);
-    //   if (res.data.status === 200) {
-    //     setLogin(true)
-    //     setTimeout(() => { props.history.push('/') }, 2000)
-    //   }
-    //   else {
-    //     setLogin(false)
-    //   }
-    // })
+    axios.post('/user/login', { username, password })
+      .then(res => {
+        if (res.data.logged_in) {
+          setMsg('Logged In successfully')
+          setTimeout(() => { props.history.push('/') }, 1000)
+        } else
+          setMsg('Wrong Credentials')
+        setSnackOpen(true)
+      })
   }
 
   const handleClose = (event, reason) => {
@@ -122,10 +91,6 @@ function Login(props) {
               autoComplete="current-password"
               onChange={(e) => setPwd(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -138,13 +103,13 @@ function Login(props) {
           </Button>
             <Grid container>
               <Grid item xs>
-                <Link className={classes.link} to={'#'} variant="body2">
+                {/* <Link className={classes.link} to={'#'} variant="body2">
                   Forgot password?
-              </Link>
+              </Link> */}
               </Grid>
               <Grid item>
                 <span>Don't have an account?</span>
-                <Link className={classes.link} to={'/user/signup'} variant="body2"> Sign Up
+                <Link className={classes.link} to={'/signup'} variant="body2"> Sign Up
               </Link>
               </Grid>
             </Grid>
@@ -173,4 +138,28 @@ function Login(props) {
   );
 }
 
-export default withRouter(Login) 
+export default withRouter(Login);
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  link: {
+    color: '#fff',
+    textDecoration: 'none'
+  }
+}));

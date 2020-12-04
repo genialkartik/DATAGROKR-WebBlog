@@ -4,9 +4,9 @@ const session = require('express-session')
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const mongoose = require('mongoose')
-const path = require('path')
+// const path = require('path')
 
-app.use(express.static(path.join(__dirname, "./build")));
+// app.use(express.static(path.join(__dirname, "./build")));
 app.use(cors());
 var PORT = process.env.PORT || 2020
 
@@ -36,10 +36,11 @@ mongoose.connect('mongodb+srv://genialkartik:genialkartik@datagrokr.fnll7.mongod
 
 app.use(require('./routes/blog'))
 app.use(require('./routes/comment'))
+app.use(require('./routes/user'))
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
 
 const server = app.listen(PORT, () => {
   console.log(`Listening on PORT:  ${PORT}`)

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -28,88 +28,51 @@ import ImageIcon from '@material-ui/icons/Image';
 
 import HeaderBar from '../includes/header'
 
-const useStyles = makeStyles((theme) => ({
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 1000,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  paper: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(2),
-    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-      marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
-      padding: theme.spacing(3),
-    },
-  },
-  toolbar: {
-    position: 'sticky',
-    top: 0,
-    backgroundColor: '#424242',
-    boxShadow: '0px 1px 2px 0px #111',
-    display: 'flex',
-    justifyContent: 'space-around',
-    zIndex: 1,
-  },
-  button: {
-    marginLeft: theme.spacing(50),
-  },
-  toolbutton: {
-    margin: theme.spacing(1),
-    fontSize: 30,
-    cursor: 'pointer',
-    borderRadius: 5
-  },
-  input: {
-    display: 'none',
-  },
-  editor: {
-    width: '100%',
-    minHeight: '400px',
-    marginTop: '2rem',
-    backgroundColor: '#fffffc',
-    padding: '1rem',
-    fontSize: '1rem',
-    boxShadow: '0 .1rem .4rem black',
-    overflow: 'hidden',
-    borderRadius: '8px',
-    wordWrap: 'anywhere',
-    color: '#000'
-  }
-}));
-
-export default function UploadBlog() {
+export default function UploadBlog(props) {
+  let mode = new URLSearchParams(props.location.search).get('mode')
+  let blogId = new URLSearchParams(props.location.search).get('blogId')
   const classes = useStyles();
   const [title, setTitle] = useState('')
   const [tags, settags] = useState('')
   const [cover, setcover] = useState('')
-
   const descText = useRef();
 
+  useEffect(() => {
+    if (mode === 'edit') {
+      axios.post('/read', { blogId })
+        .then(res => {
+          if (!res.data.blogData) alert('NO data found')
+          else {
+            setTitle(res.data.blogData.Title)
+            settags(res.data.blogData.Tags)
+            descText.current.innerHTML = res.data.blogData.Description
+          }
+        })
+    }
+  }, [blogId, mode])
+
   const upload = async () => {
-    try {
-      let formData = new FormData();
-      formData.append('title', title)
-      formData.append('tags', tags)
-      formData.append('cover', cover)
-      formData.append('desc', descText.current.innerHTML)
-      axios.post('/blog/upload', formData
-      ).then(res => {
-        if (res.data.uploaded) {
-          window.location.replace('/read?blogId=' + res.data.blogData.BlogId)
-        } else {
-          alert('Something went Wrong in Uploading Blog')
-        }
-      })
-    } catch (error) {
-      console.log(error)
+    if (!cover) {
+      alert('select a feature image')
+      return
+    } else {
+      try {
+        let formData = new FormData();
+        formData.append('title', title)
+        formData.append('tags', tags)
+        formData.append('cover', cover)
+        formData.append('desc', descText.current.innerHTML)
+        axios.post('/blog/upload', formData
+        ).then(res => {
+          if (res.data.uploaded) {
+            window.location.replace('/read?blogId=' + res.data.blogData.BlogId)
+          } else {
+            alert('Something went Wrong in Uploading Blog')
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -195,26 +158,28 @@ export default function UploadBlog() {
           <React.Fragment>
             <React.Fragment>
               <TextField
-                id="blog-title" label="Blog Title"
+                id="blog-title" label={title ? title : "Blog Title"}
                 placeholder="Do you know blogs with better title featured first"
                 fullWidth
                 margin="normal"
                 variant="outlined"
+                value={title}
                 onChange={e => setTitle(e.target.value)}
               />
               <TextField
-                id="tags" label="Tags"
+                id="tags" label={tags ? tags : "Tags"}
                 placeholder="Write, tags, like, this"
                 fullWidth size="small"
                 margin="normal"
                 variant="outlined"
+                value={tags}
                 onChange={e => settags(e.target.value)}
               /><br /><br />
               <input
                 accept="image/*"
                 className={classes.input}
                 id="feature-image"
-                type="file"
+                type="file" required
                 onChange={e => setcover(e.target.files[0])}
               />
               <label htmlFor="feature-image">
@@ -245,18 +210,30 @@ export default function UploadBlog() {
                     <ImageIcon className={classes.toolbutton} />
                   </label>
                 </div>
-                <div className="center">
+                <div className={classes.editorContainer}>
                   <div className={classes.editor} ref={descText} contentEditable>
                   </div>
                   <br /><br />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    className={classes.button}
-                    onClick={upload}
-                    startIcon={<PublicIcon />}
-                  >Publish Blog</Button>
+                  <div className={classes.center}>
+                    {mode === 'edit' ?
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="large"
+                        className={classes.button}
+                        onClick={() => console.log('cancel')}
+                        startIcon={<PublicIcon />}
+                      >Cancel</Button> :
+                      <></>}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      className={classes.button}
+                      onClick={upload}
+                      startIcon={<PublicIcon />}
+                    >Publish Blog</Button>
+                  </div>
                 </div>
               </div>
             </React.Fragment>
@@ -266,3 +243,63 @@ export default function UploadBlog() {
     </React.Fragment >
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  layout: {
+    width: 'auto',
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
+      width: 1000,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
+    padding: theme.spacing(2),
+    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+      marginTop: theme.spacing(6),
+      marginBottom: theme.spacing(6),
+      padding: theme.spacing(3),
+    },
+  },
+  toolbar: {
+    position: 'sticky',
+    top: 0,
+    backgroundColor: '#424242',
+    boxShadow: '0px 1px 2px 0px #111',
+    display: 'flex',
+    justifyContent: 'space-around',
+    zIndex: 1,
+  },
+  button: {
+    marginLeft: theme.spacing(5)
+  },
+  toolbutton: {
+    margin: theme.spacing(1),
+    fontSize: 30,
+    cursor: 'pointer',
+    borderRadius: 5
+  },
+  input: {
+    display: 'none',
+  },
+  editor: {
+    width: '100%',
+    minHeight: '400px',
+    marginTop: '2rem',
+    backgroundColor: '#fffffc',
+    padding: '1rem',
+    fontSize: '1rem',
+    boxShadow: '0 .1rem .4rem black',
+    overflow: 'hidden',
+    borderRadius: '8px',
+    wordWrap: 'anywhere',
+    color: '#000'
+  },
+  center: {
+    display: 'flex'
+  }
+}));

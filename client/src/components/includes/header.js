@@ -120,7 +120,7 @@ function HeaderBar() {
           <Toolbar>
             <Typography className={classes.title} variant="h6" noWrap
               onClick={() => window.location.replace('/')}>
-              Welcome DATAGROKRian
+              DATAGROKR
           </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>

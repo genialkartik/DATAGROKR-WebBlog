@@ -4,12 +4,12 @@ const session = require('express-session')
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const mongoose = require('mongoose')
-// const path = require('path')
+const path = require('path')
 
-// app.use(express.static(path.join(__dirname, "./build")));
+app.use(express.static(path.join(__dirname, "./build")));
 app.use(cors());
 var PORT = process.env.PORT || 2020
-
+// prevent CORS
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -38,9 +38,10 @@ app.use(require('./routes/blog'))
 app.use(require('./routes/comment'))
 app.use(require('./routes/user'))
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
+// access build files
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 const server = app.listen(PORT, () => {
   console.log(`Listening on PORT:  ${PORT}`)

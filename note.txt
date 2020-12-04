@@ -1,2 +1,2 @@
-like, impression on blog list
 delete comment
+history route

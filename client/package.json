@@ -40,5 +40,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://datagrokrwebapp.herokuapp.com/"
+  "proxy": "http://localhost:2020"
 }

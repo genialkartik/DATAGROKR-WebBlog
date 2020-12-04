@@ -4,7 +4,10 @@ const User = require('../model/User')
 rtr.get('/user/login', async (req, res) => {
   res.status(200).json({
     logged_in: req.session.userdata ? true : false,
-    fullname: req.session.userdata ? req.session.userdata.fullname : 'Guest'
+    activeUser: req.session.userdata ? req.session.userdata : {
+      fullname: 'Guest User',
+      username: 'guest'
+    }
   })
 })
 

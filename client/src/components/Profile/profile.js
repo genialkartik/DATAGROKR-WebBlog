@@ -16,6 +16,7 @@ function Profile() {
   const classes = useStyles()
   const [blogs, setblogs] = useState([])
   const [loggedIn, setLoggedIn] = useState(false)
+  const [activeUser, setActiveUser] = useState({})
 
   useEffect(() => {
     try {
@@ -30,6 +31,8 @@ function Profile() {
             setblogs(res.data.blog_list)
           }
         })
+      axios.get('/user/login')
+        .then(res => { setActiveUser(res.data.activeUser) })
     } catch (error) {
       console.log(error)
     }
@@ -51,7 +54,7 @@ function Profile() {
         </CardContent>
       </Card>
       <div>
-        {blogs.map(blog => <Blog role="admin" loggedIn={loggedIn} data={blog} />)}
+        {blogs.map(blog => <Blog role="admin" activeUser={activeUser} loggedIn={loggedIn} data={blog} />)}
       </div>
     </>
   )

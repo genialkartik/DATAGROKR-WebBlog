@@ -20,7 +20,9 @@ router.post('/add/comment', async (req, res) => {
     var newComment = new Comment({
       commentId: uuidv4(),
       blogId: req.body.blogId,
-      author: 'Madan Lal',
+      parentId: 'root',
+      author: req.session.userdata ? req.session.userdata.fullname : '',
+      level: 1,
       text: req.body.commentText
     })
     await newComment.save()
@@ -37,19 +39,64 @@ router.post('/add/reply', async (req, res) => {
   try {
     var newReply = new Comment({
       commentId: uuidv4(),
+      parentId: req.body.id,
       blogId: req.body.blogId,
-      author: 'Madan Lal',
+      author: req.session.userdata ? req.session.userdata.fullname : '',
+      level: 2,
       text: req.body.commentText
     })
-    Comment.updateOne(
-      { blogId: req.body.blogId },
+    Comment.findByIdAndUpdate(req.body.id,
       { $push: { Comments: newReply } },
-      (err, data) => {
+      (err) => {
         res.json({ replied: err ? false : true })
       })
   } catch (error) {
     console.log(error)
     res.status(200).json({ replied: false })
+  }
+})
+
+router.post('/edit/comment', async (req, res) => {
+  try {
+    console.log(req.body)
+    if (req.body.level == 1) {
+      Comment.findByIdAndUpdate(req.body.id,
+        { text: req.body.newText }, (err) => {
+          res.status(200).json({ is_updated: err ? false : true })
+        })
+    } else {
+      Comment.updateOne(
+        { _id: req.body.parentId, "Comments.commentId": req.body.commentId },
+        { $set: { "Comments.$.text": req.body.newText } }, (err, data) => {
+          console.log(err)
+          console.log(data)
+          res.status(200).json({ is_updated: err ? false : true })
+        })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(200).json({ is_updated: false })
+  }
+})
+
+
+router.post('/delete/comment', async (req, res) => {
+  try {
+    if (req.body.level == 1) {
+      Comment.findByIdAndDelete(req.body.id, (err, data) => {
+        res.status(200).json({ is_deleted: err ? false : true })
+      })
+    } else {
+      Comment.updateOne(
+        {},
+        { $pull: { Comments: { commentId: req.body.commentId } } },
+        err => {
+          res.json({ is_deleted: err ? false : true })
+        })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(200).json({ is_deleted: false })
   }
 })
 

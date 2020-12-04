@@ -17,7 +17,7 @@ import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import DeleteIcon from '@material-ui/icons/Delete';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import EditIcon from '@material-ui/icons/Edit';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -32,12 +32,15 @@ export default function Blog(props) {
   const [impCount, setICount] = useState(0)
   const [visiCount, setVCount] = useState(0)
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const isMenuOpen = Boolean(anchorEl);
   const [tags, setTags] = useState([])
+  const isMenuOpen = Boolean(anchorEl);
 
   useEffect(() => {
     setLoggedIn(props.loggedIn)
     setLCount(props.data.Likes.length)
+    // reacted on post?
+    setLiked(props.data.Likes.find(name => name === props.activeUser.fullname))
+    setImpression(props.data.Impressions.find(name => name === props.activeUser.fullname))
     setICount(props.data.Impressions.length)
     setVCount(props.data.visitorsCount)
     setTags(props.data.Tags.split(',', 4))
@@ -187,7 +190,7 @@ export default function Blog(props) {
             </Typography>
           </IconButton>
           <IconButton aria-label="Visitor's Count">
-            <VisibilityIcon />
+            <PeopleAltIcon />
             <Typography variant="body1" color="textPrimary" component="h6">
               &nbsp;{visiCount}
             </Typography>

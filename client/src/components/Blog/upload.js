@@ -25,6 +25,8 @@ import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
 import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
 import ImageIcon from '@material-ui/icons/Image';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import HeaderBar from '../includes/header'
 
@@ -35,6 +37,7 @@ export default function UploadBlog(props) {
   const [title, setTitle] = useState('')
   const [tags, settags] = useState('')
   const [cover, setcover] = useState('')
+  const [open, setOpen] = React.useState(false);
   const descText = useRef();
 
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function UploadBlog(props) {
       alert('select a feature image')
       return
     } else {
+      setOpen(!open);
       try {
         let formData = new FormData();
         formData.append('title', title)
@@ -74,6 +78,10 @@ export default function UploadBlog(props) {
         console.log(error)
       }
     }
+  }
+
+  const handleClose = () => {
+    setOpen(false);
   }
 
   // var btn = document.querySelector(".gethtml");
@@ -239,6 +247,9 @@ export default function UploadBlog(props) {
             </React.Fragment>
           </React.Fragment>
         </Paper>
+        <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </main>
     </React.Fragment >
   );
@@ -299,7 +310,6 @@ const useStyles = makeStyles((theme) => ({
     wordWrap: 'anywhere',
     color: '#000'
   },
-  center: {
-    display: 'flex'
-  }
+  center: { display: 'flex' },
+  backdrop: { zIndex: theme.zIndex.drawer + 1, color: '#fff', },
 }));

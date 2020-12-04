@@ -8,10 +8,15 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  parentId: {
+    type: String,
+    required: true,
+  },
   author: {
     type: String,
     required: true
   },
+  level: Number,
   text: {
     type: String,
     required: true

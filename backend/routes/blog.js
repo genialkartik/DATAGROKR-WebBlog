@@ -42,9 +42,11 @@ router.get('/blogs/list', async (req, res) => {
     Blog.find({}, (err, data) => {
       res.status(200).json(
         err ? {
+          activeUser: req.session.userdata ? req.session.userdata : {},
           blog_list: [],
           logged_in: req.session.userdata ? true : false
         } : {
+            activeUser: req.session.userdata ? req.session.userdata : {},
             blog_list: data,
             logged_in: req.session.userdata ? true : false
           })
@@ -61,15 +63,18 @@ router.post('/blogs/list', async (req, res) => {
       Blog.find({ Author: req.session.userdata.fullname }, (err, data) => {
         res.status(200).json(
           err ? {
+            activeUser: req.session.userdata ? req.session.userdata : {},
             blog_list: [],
             logged_in: true
           } : {
+              activeUser: req.session.userdata ? req.session.userdata : {},
               blog_list: data,
               logged_in: true
             })
       })
     } else {
       res.status(200).json({
+        activeUser: req.session.userdata ? req.session.userdata : {},
         blog_list: [], logged_in: false
       })
     }
@@ -84,8 +89,11 @@ router.post('/read', async (req, res) => {
   try {
     Blog.findOne({ BlogId: req.body.blogId }, (err, blogData) => {
       Blog.updateOne({ BlogId: req.body.blogId }, { visitorsCount: blogData.visitorsCount + 1 }, () => { })
-      var liked = blogData.Likes.find(name => name == 'Madan')
-      var impressed = blogData.Impressions.find(name => name == 'Madan')
+      var liked = null, impressed = null;
+      if (req.session.userdata) {
+        liked = blogData.Likes.find(name => name == req.session.userdata.fullname)
+        impressed = blogData.Impressions.find(name => name == req.session.userdata.fullname)
+      }
       res.status(200).json(err ? null : {
         blogData,
         logged_in: req.session.userdata ? true : false,

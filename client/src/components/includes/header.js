@@ -22,7 +22,10 @@ function HeaderBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false)
-  const [fullname, setFName] = useState('Guest')
+  const [activeUser, setActiveUser] = useState({
+    fullname: 'Guest User',
+    username: 'guest'
+  })
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -34,7 +37,7 @@ function HeaderBar() {
           setLoggedIn(true)
         else
           setLoggedIn(false)
-        setFName(res.data.fullname)
+        setActiveUser(res.data.activeUser)
       })
   }, [])
 
@@ -189,6 +192,7 @@ function HeaderBar() {
                   </Badge>
                 </IconButton>
               </Link> */}
+              <p style={{ fontSize: 15, marginTop: 16 }}>hi, {activeUser.fullname}&nbsp;&nbsp;</p>
               <IconButton
                 edge="end"
                 aria-label="account of current user"
@@ -196,9 +200,7 @@ function HeaderBar() {
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
                 color="inherit"
-              >
-                <p style={{ fontSize: 15 }}>hi, {fullname}&nbsp;&nbsp;</p>
-                <AccountCircle />
+              ><AccountCircle />
               </IconButton>
             </div>
             <div className={classes.sectionMobile}>

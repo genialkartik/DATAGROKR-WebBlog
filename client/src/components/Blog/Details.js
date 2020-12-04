@@ -2,24 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import BookIcon from '@material-ui/icons/Book';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import Button from '@material-ui/core/Button';
 import ReplyIcon from '@material-ui/icons/Reply';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import HeaderBar from '../includes/header'
 import './details.css';
 import CommentCard from './commentCard'
 
-let socket;
+// let socket;
 function BlogDetail(props) {
   const classes = useStyles();
   let blogId = new URLSearchParams(props.location.search).get('blogId')
+  const [activeUser, setActiveUser] = useState({})
   const [loggedIn, setLoggein] = useState(false)
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
@@ -37,7 +40,7 @@ function BlogDetail(props) {
 
   useEffect(() => {
     try {
-      socket = io('https://datagrokrwebapp.herokuapp.com/')
+      // socket = io('https://datagrokrwebapp.herokuapp.com/')
       // get blog details
       axios({
         method: 'POST',
@@ -66,14 +69,17 @@ function BlogDetail(props) {
               })
           }
         })
+      // User's Details
+      axios.get('/user/login')
+        .then(res => { setActiveUser(res.data.activeUser) })
       // count this user as active reader
 
-      socket.on('connect', () => {
-        socket.emit('readBlog', { blogId }, (currentViewers) => {
-          console.log(currentViewers)
-          setActiveReaders(currentViewers)
-        });
-      });
+      // socket.on('connect', () => {
+      //   socket.emit('readBlog', { blogId }, (currentViewers) => {
+      //     console.log(currentViewers)
+      //     setActiveReaders(currentViewers)
+      //   });
+      // });
     } catch (error) {
       console.log(error)
     }
@@ -83,7 +89,7 @@ function BlogDetail(props) {
     const nestedComments = (comment.Comments || []).map(comment => {
       return <Comment key={comment.commentId} comment={comment} type="child" />
     })
-
+    // Comment Text
     return (
       <div style={{ "marginLeft": "25px", "marginTop": "10px" }}>
         <div className="comment-form" id="new_comment">
@@ -94,10 +100,12 @@ function BlogDetail(props) {
           <div className="comment-form__field">
             <p className="comment-show" style={{ border: '1px', padding: '10px' }}>
               <div className="article__subheader">
-                <a href="/bytebodger" style={{ color: '#fff' }} className="flex items-center mr-4 mb-4 s:mb-0 fw-medium blog-link">
+                <a href={'/'} style={{ color: '#fff' }} className="flex items-center mr-4 mb-4 s:mb-0 fw-medium blog-link">
                   {comment.author}</a>
                 <span className="fs-s mb-4 s:mb-0">
-                  ・<time dateTime="2020-11-27T04:56:11Z" style={{ color: '#999' }} title="Friday, 27 November 2020, 10:26:11">27 Nov</time>
+                  ・<time dateTime={comment.date_created} style={{ color: '#999' }} title={comment.date_created}>
+                    {new Date(comment.date_created).toString().substring(0, 15)}
+                  </time>
                 </span>
               </div>{comment.text}
             </p>
@@ -106,7 +114,16 @@ function BlogDetail(props) {
         {selectedComment === comment._id && replyInput}
         <div className="reply-btn">
           {reply_bool && loggedIn &&
-            <Button startIcon={<ReplyIcon />} onClick={() => addReplyCard(comment._id)} size="small">Reply</Button>
+            <>
+              <Button style={{ marginRight: 30 }} startIcon={<ReplyIcon />}
+                onClick={() => addReplyCard(comment._id)} size="small">Reply</Button>
+              {(activeUser.fullname === comment.author) && <>
+                <Button style={{ marginRight: 30 }} startIcon={<EditIcon />}
+                  onClick={() => editComment(comment._id, comment.parentId, comment.level, comment.commentId)} size="small">Edit</Button>
+                <Button style={{ marginRight: 30 }} startIcon={<DeleteIcon />}
+                  onClick={() => deleteComment(comment._id, comment.parentId, comment.level, comment.commentId)} size="small">Delete</Button></>
+              }
+            </>
           }
         </div>
         {nestedComments}
@@ -114,6 +131,34 @@ function BlogDetail(props) {
     )
   }
 
+  const editComment = (id, parentId, level, commentId) => {
+    try {
+      let newText = window.prompt('Enter Comment Text');
+      if (newText) {
+        axios.post('/edit/comment', { id, parentId, level, commentId, newText })
+          .then(res => {
+            if (!res.data.is_updated) alert('Something went Wrong')
+            window.location.reload()
+          })
+      }
+    } catch (error) {
+      console.log(error)
+      alert('Something went Wrong.')
+    }
+  }
+
+  const deleteComment = (id, parentId, level, commentId) => {
+    try {
+      axios.post('/delete/comment', { id, parentId, level, commentId })
+        .then(res => {
+          alert(res.data.is_deleted ? 'Comment deleted Successfully' : 'Something went Wrong')
+          window.location.reload()
+        })
+    } catch (error) {
+      console.log(error)
+      alert('Unable to Delete! Something went Wrong.')
+    }
+  }
 
   const uploadReply = async (id) => {
     try {
@@ -135,6 +180,7 @@ function BlogDetail(props) {
   const addReplyCard = (id) => {
     setSelectedComment(id)
     setReplyBool(false)
+    // Add Comment Box
     setreplyInput(replyInput.concat(
       <div className="reply-container" key={Math.random()} data-commentable-type="Article">
         <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
@@ -221,7 +267,7 @@ function BlogDetail(props) {
                 </div>
               </button>
               <button className="actionBox" title="Visitor's Count">
-                <BookIcon style={{ color: 'green' }} />
+                <PeopleAltIcon style={{ color: 'green' }} />
                 <div className="actionCouter">
                   <span>{visiCount}</span>
                 </div>

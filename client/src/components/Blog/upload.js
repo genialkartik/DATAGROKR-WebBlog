@@ -24,7 +24,6 @@ import ColorLensIcon from '@material-ui/icons/ColorLens';
 import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
 import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import ImageIcon from '@material-ui/icons/Image';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -84,33 +83,6 @@ export default function UploadBlog(props) {
     setOpen(false);
   }
 
-  // var btn = document.querySelector(".gethtml");
-  // var content = document.querySelector(".getcontent");
-  // var editorContent = document.querySelector(".editor");
-  // var filecount = 0;
-  // btn.addEventListener("click", function () {
-  //   var desc = document.querySelector(".editor").innerHTML
-  //   let formData = new FormData()
-  //   if (desc) {
-  //     formData.append('blogtitle', document.querySelector("#blogtitle").value)
-  //     formData.append('blogtags', document.querySelector("#blogtags").value)
-  //     formData.append('blogdesc', desc)
-  //     $.ajax({
-  //       url: '/blog/<%=user.uname%>/upload-blog/<%=blogid%>',
-  //       method: 'POST',
-  //       contentType: false,
-  //       processData: false,
-  //       data: formData,
-  //       success: function (res) {
-  //         location.href = res.redirectto;
-  //       },
-  //       error: function () {
-  //         location.reload()
-  //       }
-  //     })
-  //   }
-  // });
-
   function link() {
     var url = prompt("Enter the URL");
     document.execCommand("createLink", false, url);
@@ -126,34 +98,6 @@ export default function UploadBlog(props) {
     document.execCommand('backColor', false, bcolor);
   }
 
-  // function getImage() {
-  //   var file = document.querySelector("input[type=file]").files[0];
-  //   let formData = new FormData()
-  //   if (file) {
-  //     formData.append('blogfile', file)
-  //     $.ajax({
-  //       url: '/blog/upload-blogfile/<%=blogid%>',
-  //       method: 'PUT',
-  //       contentType: false,
-  //       processData: false,
-  //       data: formData,
-  //       success: function (res) {
-  //         console.log(res)
-  //         const img = document.createElement("img");
-  //         img.setAttribute("id", "metadata" + filecount);
-  //         img.setAttribute("class", "blogdescimg");
-  //         img.src = res.img_location;
-  //         editorContent.appendChild(img)
-  //         filecount++;
-  //       },
-  //       error: function () {
-  //         alert('Upload faild. Please try again')
-  //       }
-  //     })
-  //   } else {
-  //     alert('select any file to upload')
-  //   }
-  // }
   return (
     <React.Fragment>
       <HeaderBar />
@@ -213,10 +157,6 @@ export default function UploadBlog(props) {
                   <FormatAlignLeftIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyLeft', false, '')} />
                   <FormatAlignCenterIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyCenter', false, '')} />
                   <FormatAlignRightIcon className={classes.toolbutton} onClick={() => document.execCommand('justifyRight', false, '')} />
-                  <input accept="image/*" className={classes.input} id="blog-images" type="file" onChange={"getImage"} />
-                  <label htmlFor="blog-images">
-                    <ImageIcon className={classes.toolbutton} />
-                  </label>
                 </div>
                 <div className={classes.editorContainer}>
                   <div className={classes.editor} ref={descText} contentEditable>

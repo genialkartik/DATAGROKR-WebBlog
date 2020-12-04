@@ -94,7 +94,7 @@ function BlogDetail(props) {
       <div style={{ "marginLeft": "25px", "marginTop": "10px" }}>
         <div className="comment-form" id="new_comment">
           <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
-            <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
+            <img src="https://avatars1.githubusercontent.com/u/32240906?s=460&v=4"
               width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
           </span>
           <div className="comment-form__field">
@@ -185,7 +185,7 @@ function BlogDetail(props) {
       <div className="reply-container" key={Math.random()} data-commentable-type="Article">
         <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
           <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
-            <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
+            <img src="https://avatars1.githubusercontent.com/u/32240906?s=460&v=4"
               width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
           </span>
           <div className="comment-form__field">
@@ -351,7 +351,7 @@ function BlogDetail(props) {
             <div className="-mt-4">
               <a href="/bytebodger" className="flex">
                 <span className="blog-avatar blog-avatar--xl  mr-2 shrink-0">
-                  <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--MMbZqYXw--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/337841/18d07d43-995c-4ec9-b6b5-be71c843e803.jpeg" className="blog-avatar__image" alt="Adam Nathaniel Davis profile" />
+                  <img src="https://avatars1.githubusercontent.com/u/32240906?s=460&v=4" className="blog-avatar__image" alt="Kartik Tyagi" />
                 </span>
                 <span className="blog-link blog-subtitle-2 mt-5">{BlogData.Author}</span>
               </a>

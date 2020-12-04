@@ -27,7 +27,7 @@ export default function CommentCard(props) {
     <div id="comments-container" data-commentable-id="519528" data-commentable-type="Article">
       <form className="comment-form" id="new_comment" action="/comments" acceptCharset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓" />
         <span className="blog-avatar m:blog-avatar--l mr-2 shrink-0">
-          <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RmY55OKL--/c_limit,f_auto,fl_progressive,q_auto,w_256/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
+          <img src="https://avatars1.githubusercontent.com/u/32240906?s=460&v=4"
             width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
         </span>
         <div className="comment-form__field">

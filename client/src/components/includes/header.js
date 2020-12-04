@@ -7,15 +7,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import ModeCommentIcon from '@material-ui/icons/ModeComment';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
 
 function HeaderBar() {
   const classes = useStyles();
@@ -103,36 +99,6 @@ function HeaderBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/* <Link className={classes.link} to={'/notification?type=impressions'}>
-        <MenuItem>
-          <IconButton aria-label="show 4 new Comments" color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <ModeCommentIcon />
-            </Badge>
-          </IconButton>
-          <p>Comments</p>
-        </MenuItem>
-      </Link>
-      <Link className={classes.link} to={'/notification?type=impressions'}>
-        <MenuItem >
-          <IconButton aria-label="show 11 new Likes" color="inherit">
-            <Badge badgeContent={11} color="secondary">
-              <FavoriteIcon />
-            </Badge>
-          </IconButton>
-          <p>Likes</p>
-        </MenuItem>
-      </Link>
-      <Link className={classes.link} to={'/notification?type=impressions'}>
-        <MenuItem>
-          <IconButton aria-label="show 4 new Insights" color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <OfflineBoltIcon />
-            </Badge>
-          </IconButton>
-          <p></p>
-        </MenuItem>
-      </Link> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -171,27 +137,6 @@ function HeaderBar() {
             </div>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-              {/* <Link className={classes.link} to={'/notification?type=comments'}>
-                <IconButton aria-label="show 4 new Comments" color="inherit">
-                  <Badge badgeContent={4} color="secondary">
-                    <ModeCommentIcon />
-                  </Badge>
-                </IconButton>
-              </Link>
-              <Link className={classes.link} to={'/notification?type=likes'}>
-                <IconButton aria-label="show 17 new Likes" color="inherit">
-                  <Badge badgeContent={17} color="secondary">
-                    <FavoriteIcon />
-                  </Badge>
-                </IconButton>
-              </Link>
-              <Link className={classes.link} to={'/notification?type=impressions'}>
-                <IconButton aria-label="show 4 new Impressive" color="inherit">
-                  <Badge badgeContent={17} color="secondary">
-                    <OfflineBoltIcon />
-                  </Badge>
-                </IconButton>
-              </Link> */}
               <p style={{ fontSize: 15, marginTop: 16 }}>hi, {activeUser.fullname}&nbsp;&nbsp;</p>
               <IconButton
                 edge="end"

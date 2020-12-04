@@ -43,7 +43,7 @@ rtr.post('/user/signup', async (req, res) => {
       else {
         const newUser = new User({
           Name: fullname,
-          Username: username,
+          Username: username.replace(/\s/g, ''),
           Password: password
         })
         await newUser.save()

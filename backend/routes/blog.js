@@ -13,7 +13,7 @@ router.post('/blog/upload', async (req, res) => {
         console.log(fileLocation)
         if (fileLocation) {
           var newBlog = new Blog({
-            Author: 'Kartik Tyagi',
+            Author: req.session.userdata ? req.session.userdata.fullname : 'Guest User',
             Title: req.body.title,
             Tags: req.body.tags,
             Description: req.body.desc,
@@ -116,8 +116,8 @@ router.post('/like/reaction', async (req, res) => {
     Blog.updateOne(
       { BlogId: req.body.id },
       req.body.add ?
-        { $push: { Likes: 'Madan' } } :
-        { $pull: { Likes: 'Madan' } },
+        { $push: { Likes: req.session.userdata ? req.session.userdata.fullname : '' } } :
+        { $pull: { Likes: req.session.userdata ? req.session.userdata.fullname : '' } },
       err => {
         res.json({ liked: err ? false : true })
       })
@@ -132,8 +132,8 @@ router.post('/impression/reaction', async (req, res) => {
     Blog.updateOne(
       { BlogId: req.body.id },
       req.body.add ?
-        { $push: { Impressions: 'Madan' } } :
-        { $pull: { Impressions: 'Madan' } },
+        { $push: { Impressions: req.session.userdata ? req.session.userdata.fullname : '' } } :
+        { $pull: { Impressions: req.session.userdata ? req.session.userdata.fullname : '' } },
       err => {
         res.json({ impressed: err ? false : true })
       })

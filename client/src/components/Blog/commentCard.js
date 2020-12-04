@@ -13,7 +13,10 @@ export default function CommentCard(props) {
         blogId: props.blogId,
         commentText: text
       }).then(res => {
-        console.log(res.data)
+        if (res.data.data)
+          window.location.reload()
+        else
+          alert('Something went Wrong')
       })
     } catch (error) {
       console.log(error)
@@ -40,6 +43,7 @@ export default function CommentCard(props) {
       <Button variant="outlined" size="small"
         className={classes.pushComment}
         onClick={uploadComment}>Comment it!</Button>
+      <br /><br /><br />
     </div>
   )
 }

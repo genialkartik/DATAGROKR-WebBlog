@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
+import io from 'socket.io-client'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -14,55 +15,38 @@ import HeaderBar from '../includes/header'
 import './details.css';
 import CommentCard from './commentCard'
 
+let socket;
 function BlogDetail(props) {
   const classes = useStyles();
   let blogId = new URLSearchParams(props.location.search).get('blogId')
   const [liked, setLiked] = useState(false)
   const [impressed, setImpression] = useState(false)
-  // const [visitors, setVisitors] = useState(false)
   const [likeCount, setLCount] = useState(0)
   const [impCount, setICount] = useState(0)
   const [visiCount, setVCount] = useState(0)
+  const [activeReaders, setActiveReaders] = useState(0)
   const [BlogData, setBlogData] = useState({})
   const [tags, setTags] = useState([])
   const [commentInput, setCommentInput] = useState([])
   const [reply_bool, setReplyBool] = useState(true)
-  const [replyText, setRText] = useState('')
   const [replyInput, setreplyInput] = useState([])
   const [commentData, setCommentData] = useState([])
-  // const commentData = [
-  //   {
-  //     id: 1,
-  //     text: "Example comment here.",
-  //     author: "user2",
-  //     Comments: [
-  //       {
-  //         id: 2,
-  //         text: "Another example comment text.",
-  //         author: "user3",
-  //         Comments: [
-  //           {
-  //             id: 3,
-  //             text: "Another example comment text.",
-  //             author: "user4",
-  //             Comments: []
-  //           }
-  //         ]
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     id: 4,
-  //     text: "Example comment here 2.",
-  //     author: "user5",
-  //     Comments: []
-  //   },
-  // ]
-
+  const [selectedComment, setSelectedComment] = useState('');
 
   useEffect(() => {
     try {
-      axios.post('/read', { blogId })
+      socket = io('http://localhost:2020/')
+      // get blog details
+      axios({
+        method: 'POST',
+        url: '/read',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+          mode: 'no-cors',
+        },
+        data: { blogId }
+      })
         .then(res => {
           if (!res.data) alert('NO data found')
           else {
@@ -75,6 +59,16 @@ function BlogDetail(props) {
             setTags(res.data.blogData.Tags.split(','))
           }
         })
+      // count this user as active reader
+
+      socket.on('connect', () => {
+        socket.emit('readBlog', { blogId }, (currentViewers) => {
+          console.log(currentViewers)
+          setActiveReaders(currentViewers)
+        });
+      });
+
+      // get comments' detail
       axios.post('/get/comment', { blogId })
         .then(res => {
           console.log(res.data)
@@ -109,7 +103,7 @@ function BlogDetail(props) {
             </p>
           </div>
         </div>
-        {replyInput}
+        {selectedComment === comment._id && replyInput}
         <div className="reply-btn">
           {reply_bool &&
             <Button startIcon={<ReplyIcon />} onClick={() => addReplyCard(comment._id)} size="small">Reply</Button>
@@ -123,13 +117,15 @@ function BlogDetail(props) {
 
   const uploadReply = async (id) => {
     try {
-      console.log(id)
       axios.post('/add/reply', {
         blogId: blogId,
-        commentText: 'Reply Reply 7',
+        commentText: document.getElementById('replytext' + id).value,
         id: id
       }).then(res => {
-        console.log(res.data)
+        if (res.data.replied)
+          window.location.reload()
+        else
+          alert("Something went Wrong")
       })
     } catch (error) {
       console.log(error)
@@ -137,6 +133,7 @@ function BlogDetail(props) {
   }
 
   const addReplyCard = (id) => {
+    setSelectedComment(id)
     setReplyBool(false)
     setreplyInput(replyInput.concat(
       <div className="reply-container" key={Math.random()} data-commentable-type="Article">
@@ -146,11 +143,10 @@ function BlogDetail(props) {
               width="32" height="32" alt="pic" className="blog-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" />
           </span>
           <div className="comment-form__field">
-            <textarea placeholder="Add Reply" id="text-area"
+            <textarea placeholder="Add Reply" id={'replytext' + id}
               className="blog-textfield comment-textarea blog-textfield--ghost"
               aria-label="Add a Reply"
               name="comment[body_markdown]"
-              onChange={e => setRText(e.target.value)}
             >
             </textarea>
           </div>
@@ -233,7 +229,7 @@ function BlogDetail(props) {
               <button className="actionBox" title="Read Now">
                 <VisibilityIcon style={{ color: 'blue' }} />
                 <div className="actionCouter">
-                  <span>130</span>
+                  <span>{activeReaders}</span>
                 </div>
               </button>
             </div>
@@ -279,9 +275,9 @@ function BlogDetail(props) {
                     </div>
                   </div>
                 </header>
+
+                {commentInput.map(input => { return input })}
                 <div id="comments-container" data-commentable-id="519528" data-commentable-type="Article">
-
-
                   <div>
                     {
                       commentData.map((comment) => {
@@ -292,7 +288,6 @@ function BlogDetail(props) {
                     }
                   </div>
                 </div>
-                {commentInput.map(input => { return input })}
               </section>
             </article>
           </div>

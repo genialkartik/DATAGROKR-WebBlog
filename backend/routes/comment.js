@@ -35,18 +35,16 @@ router.post('/add/comment', async (req, res) => {
 
 router.post('/add/reply', async (req, res) => {
   try {
-    console.log(req.body)
     var newReply = new Comment({
       commentId: uuidv4(),
       blogId: req.body.blogId,
       author: 'Madan Lal',
       text: req.body.commentText
     })
-    Comment.findByIdAndUpdate(
-      req.body.id ,
+    Comment.updateOne(
+      { blogId: req.body.blogId },
       { $push: { Comments: newReply } },
       (err, data) => {
-        console.log(data)
         res.json({ replied: err ? false : true })
       })
   } catch (error) {
@@ -54,5 +52,28 @@ router.post('/add/reply', async (req, res) => {
     res.status(200).json({ replied: false })
   }
 })
+
+// router.get('/get/reply', async (req, res) => {
+//   let obj = { "name": "Add a new File", "route": "level1_b/level2_a/level3_a/new_file2" };
+//   let segments = obj.route.split('/');;
+//   let query = { route: segments[0] };
+//   let updateQ, options = {};
+//   if (segments.length === 2) {
+//     updateQ = { $push: { Comments: obj } }
+//   } else {
+//     let updatePath = "Comments";
+//     options.arrayFilters = [];
+//     for (let i = 0; i < segments.length - 2; i++) {
+//       updatePath += `.$[child${i}].Comments`;
+//       options.arrayFilters.push({ [`child${i}.route`]: segments.slice(0, i + 2).join('/') });
+//     }
+//     updateQ = { $push: { [updatePath]: obj } };
+//   }
+//   // Comment.update({})
+//   console.log('segments', segments);
+//   console.log('query', query);
+//   console.log('update', updateQ);
+//   console.log('options', options);
+// })
 
 module.exports = router

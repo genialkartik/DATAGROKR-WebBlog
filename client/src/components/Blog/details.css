@@ -548,6 +548,8 @@ button, input, optgroup, select, textarea {
   border-radius: 5px;
   overflow: hidden;
   transition: all cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
+  margin-left: "25px";
+  margin-top: "10px" 
 }
 .reply-btn {
   position: relative;
@@ -592,7 +594,7 @@ button, input, optgroup, select, textarea {
 
 
 .comment-form .comment-textarea {
-  background-color: #1e2d3d;
+  background-color: #32485f;
   color: #fff;
   resize: vertical;
   padding: 0.5em;

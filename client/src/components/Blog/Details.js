@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-// import io from 'socket.io-client'
+import io from 'socket.io-client'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import OfflineBoltOutlinedIcon from '@material-ui/icons/OfflineBoltOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -16,7 +16,7 @@ import HeaderBar from '../includes/header'
 import './details.css';
 import CommentCard from './commentCard'
 
-// let socket;
+let socket;
 function BlogDetail(props) {
   const classes = useStyles();
   let blogId = new URLSearchParams(props.location.search).get('blogId')
@@ -37,7 +37,7 @@ function BlogDetail(props) {
 
   useEffect(() => {
     try {
-      // socket = io('http://localhost:2020/')
+      socket = io('https://datagrokrwebapp.herokuapp.com/')
       // get blog details
       axios({
         method: 'POST',
@@ -68,12 +68,12 @@ function BlogDetail(props) {
         })
       // count this user as active reader
 
-      // socket.on('connect', () => {
-      //   socket.emit('readBlog', { blogId }, (currentViewers) => {
-      //     console.log(currentViewers)
-      //     setActiveReaders(currentViewers)
-      //   });
-      // });
+      socket.on('connect', () => {
+        socket.emit('readBlog', { blogId }, (currentViewers) => {
+          console.log(currentViewers)
+          setActiveReaders(currentViewers)
+        });
+      });
     } catch (error) {
       console.log(error)
     }
@@ -254,7 +254,7 @@ function BlogDetail(props) {
                       className={classes.tags}>#{tag}</a>
                   ))}<br /><br />
                   <div className="article__subheader">
-                    <time dateTime="2020-11-27T04:56:11Z" className="date-no-year" title={BlogData.date_created}>{new Date(BlogData.date_created).toString().substring(0, 15)}</time>
+                    <time dateTime={BlogData.date_created} className="date-no-year" title={BlogData.date_created}>{new Date(BlogData.date_created).toString().substring(0, 15)}</time>
                     <span className="mr-4">・14 min read</span>
                   </div>
                 </div>

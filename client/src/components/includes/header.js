@@ -32,6 +32,8 @@ function HeaderBar() {
       .then(res => {
         if (res.data.logged_in)
           setLoggedIn(true)
+        else
+          setLoggedIn(false)
         setFName(res.data.fullname)
       })
   }, [])
@@ -233,6 +235,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
+    cursor: 'pointer'
   },
   search: {
     position: 'relative',

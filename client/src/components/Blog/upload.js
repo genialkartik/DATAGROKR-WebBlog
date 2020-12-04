@@ -158,7 +158,7 @@ export default function UploadBlog(props) {
           <React.Fragment>
             <React.Fragment>
               <TextField
-                id="blog-title" label={title ? title : "Blog Title"}
+                id="blog-title" label="Blog Title"
                 placeholder="Do you know blogs with better title featured first"
                 fullWidth
                 margin="normal"
@@ -167,7 +167,7 @@ export default function UploadBlog(props) {
                 onChange={e => setTitle(e.target.value)}
               />
               <TextField
-                id="tags" label={tags ? tags : "Tags"}
+                id="tags" label="Tags"
                 placeholder="Write, tags, like, this"
                 fullWidth size="small"
                 margin="normal"

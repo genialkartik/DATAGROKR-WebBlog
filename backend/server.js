@@ -26,7 +26,7 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 * 7 }  // 7 Days
 }));
 
-mongoose.connect('mongodb+srv://genialkartik:genialkartik@datagrokr.fnll7.mongodb.net/datagrokr', {
+mongoose.connect('', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true

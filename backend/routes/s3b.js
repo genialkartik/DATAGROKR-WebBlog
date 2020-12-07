@@ -3,8 +3,8 @@ const AWS = require('aws-sdk');
 function S3B() { };
 //configuring the AWS environment
 AWS.config.update({
-  accessKeyId: " AKIAW54ITD37QPHLTGOC",
-  secretAccessKey: "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"
+  accessKeyId: "",
+  secretAccessKey: ""
 });
 var s3 = new AWS.S3();
 
